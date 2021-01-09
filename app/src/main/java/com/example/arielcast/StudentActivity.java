@@ -3,6 +3,7 @@ package com.example.arielcast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,10 +49,13 @@ public class StudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
         inputSearch = findViewById(R.id.inputSearch);
         studentListView = findViewById(R.id.recycleView);
         studentListView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         studentListView.setHasFixedSize(true);
+
+        setSupportActionBar(toolbar);
 
         DataRef = FirebaseDatabase.getInstance().getReference().child("Courses");
 
@@ -70,17 +74,15 @@ public class StudentActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
+        inflater.inflate(R.menu.student_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.logout: {
-                logOut();
-                return true;
-            }
+        if (item.getItemId() == R.id.logout) {
+            logOut();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -128,7 +130,6 @@ public class StudentActivity extends AppCompatActivity {
 
                Query q = FirebaseDatabase.getInstance().getReference().child("Courses");
 
-
                 q.addValueEventListener(new ValueEventListener() {
                     @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -137,7 +138,6 @@ public class StudentActivity extends AppCompatActivity {
                             courses.add(c);
                             myAdapter.notifyDataSetChanged();
                         }
-
                     }
 
                     @Override
