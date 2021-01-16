@@ -77,10 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void userLogin() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("email",editTextEmail.getText().toString());
-        editor.putString("password",editTextPassword.getText().toString());
-        editor.apply();
+
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
@@ -119,6 +116,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             public void onDataChange(DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
                                     for(DataSnapshot data:snapshot.getChildren()) {
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("email",editTextEmail.getText().toString());
+                                        editor.putString("password",editTextPassword.getText().toString());
+                                        editor.putString("ID",data.child("lecturerId").getValue(String.class));
+                                        editor.apply();
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                        String value = data.child("lecturerId").getValue(String.class);
                                         intent.putExtra("Email", email);

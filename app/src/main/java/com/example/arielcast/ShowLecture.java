@@ -61,11 +61,32 @@ public class ShowLecture extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
+                    // remove from playlist
                     Drawable d = ContextCompat.getDrawable(ShowLecture.this, R.drawable.ic_baseline_playlist_add_check_24);
                     addToPlaylist.setImageDrawable(d);
+                    addToPlaylist.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dataRef.child(SCId).removeValue();
+                            Toast.makeText(ShowLecture.this,"removed from Watch Later",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } else {
+                    // add to playlist
                     Drawable d = ContextCompat.getDrawable(ShowLecture.this, R.drawable.capture1212);
                     addToPlaylist.setImageDrawable(d);
+                    addToPlaylist.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dataRef = FirebaseDatabase.getInstance().getReference("WatchLaterLec");
+                            WatchLaterLec lec = new WatchLaterLec(id, lectureID);
+                            dataRef.child(SCId).setValue(lec);
+                            Toast.makeText(ShowLecture.this,"added to Watch Later",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 }
             }
 
@@ -74,34 +95,7 @@ public class ShowLecture extends AppCompatActivity {
 
             }
         });
-        addToPlaylist.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                dataRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(!snapshot.child(SCId).exists()){
-                            dataRef = FirebaseDatabase.getInstance().getReference("WatchLaterLec");
-                            WatchLaterLec lec = new WatchLaterLec(id, lectureID);
-                            dataRef.child(SCId).setValue(lec);
-                            Toast.makeText(ShowLecture.this,"added to Watch Later",
-                                    Toast.LENGTH_LONG).show();
-                        } else {
-                            dataRef.child(SCId).removeValue();
-                            Toast.makeText(ShowLecture.this,"removed from Watch Later",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-            }
-        });
 
         //check if it's lecturer user
         Query query = FirebaseDatabase.getInstance().getReference().child("Lecturers").orderByChild("lecturerId").equalTo(id);
@@ -115,7 +109,7 @@ public class ShowLecture extends AppCompatActivity {
                         // if lecturer
                         editButton.setVisibility(View.VISIBLE);
                         deleteButton.setVisibility(View.VISIBLE);
-                        addToPlaylist.setVisibility(View.VISIBLE);
+                        addToPlaylist.setVisibility(View.INVISIBLE);
 
                         //delete lecture
                         deleteButton.setOnClickListener(new View.OnClickListener() {

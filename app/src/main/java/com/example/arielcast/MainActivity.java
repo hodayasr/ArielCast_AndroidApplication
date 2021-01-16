@@ -36,12 +36,24 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView coursesListView;
     MyAdapter myAdapter;
     ArrayList<Course> courses ;
-    String email ,lecId;
+    String email ,lecId , password;
+    SharedPreferences sharedPreferences;
+
+    private static final String SHARED_PREF_NAME="mypfer";
+    private static final String KEY_PASS="password";
+    private static final String KEY_EMAIL="email";
+    private static final String KEY_ID="ID";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sharedPreferences=getSharedPreferences(SHARED_PREF_NAME,MODE_PRIVATE);
+
+        email=sharedPreferences.getString("email",null);
+         password=sharedPreferences.getString("password",null);
+         lecId=sharedPreferences.getString("ID",null);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         coursesListView = findViewById(R.id.watch_later_recycleView);
