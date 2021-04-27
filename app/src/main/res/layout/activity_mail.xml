@@ -5,7 +5,37 @@
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#9BCEEA"
+    android:backgroundTint="#D1E9F6"
     tools:context=".MailActivity">
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="120dp"
+        android:layout_height="83dp"
+        android:layout_marginTop="708dp"
+        android:layout_marginEnd="160dp"
+        app:layout_constraintBottom_toBottomOf="@+id/banner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.468"
+        app:srcCompat="@mipmap/ic_bannerlogo_foreground"
+        tools:srcCompat="@mipmap/ic_bannerlogo_foreground" />
+
+    <TextView
+        android:id="@+id/banner2"
+        android:layout_width="177dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="732dp"
+        android:fontFamily="casual"
+        android:text="ArielCast"
+        android:textAlignment="center"
+        android:textColor="#2D2F31"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
@@ -25,10 +55,12 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
+        android:layout_marginStart="60dp"
         android:layout_marginBottom="45dp"
         android:text="Sending Mail"
+        android:textColor="#1571CC"
         android:textSize="30dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout2" />
@@ -37,7 +69,7 @@
         android:id="@+id/editTextTextPersonName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
+        android:layout_marginStart="60dp"
         android:layout_marginBottom="179dp"
         android:ems="10"
         android:hint="Email Title"
@@ -50,12 +82,13 @@
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="52dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="247dp"
         android:src="@android:drawable/ic_menu_send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintVertical_bias="0.513" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -95,7 +128,7 @@
         android:layout_width="71dp"
         android:layout_height="0dp"
         android:layout_marginBottom="350dp"
-        android:background="#FFFFFF"
+        android:background="#D1E9F6"
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
         app:layout_constraintStart_toStartOf="@+id/appBarLayout2"
         app:layout_constraintTop_toTopOf="parent"
