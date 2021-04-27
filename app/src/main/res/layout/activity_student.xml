@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="#FFFFFF"
+    android:background="@drawable/sky_blue"
     android:orientation="vertical"
     tools:context=".StudentActivity">
 
@@ -27,15 +26,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
+            android:autofillHints="@string/arielcast"
             android:background="@drawable/input_search"
             android:drawableEnd="@drawable/ic_search"
             android:hint="@string/search_course"
+            android:inputType="text"
             android:paddingStart="20dp"
             android:paddingTop="8dp"
             android:paddingEnd="10dp"
-            android:paddingBottom="8dp"
-            android:autofillHints="@string/arielcast"
-            android:inputType="text" />
+            android:paddingBottom="8dp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

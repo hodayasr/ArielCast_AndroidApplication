@@ -87,7 +87,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
                 if (snapshot.exists()) {
                         // if it's lecturer user - > don't show plus button
                         // and send email for all student tha follow this course
-                    Drawable d = ContextCompat.getDrawable(context, R.drawable.peoplesnip);
+                    Drawable d = ContextCompat.getDrawable(context, R.drawable.community_icon_12);
                        holder.plusImage.setImageDrawable(d);
 
                        //open popUp window that show student that follow this course
