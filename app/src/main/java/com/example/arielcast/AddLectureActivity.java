@@ -14,6 +14,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -23,12 +26,18 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.arielcast.firebase.model.dataObject.Course;
 import com.example.arielcast.firebase.model.dataObject.Lecture;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -53,7 +62,29 @@ public class AddLectureActivity extends AppCompatActivity{
     DatabaseReference databaseReference;
     UploadTask uploadTask;
     String lecturerEmail,lecId,cId;
+    String coursename;
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            logOut();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(AddLectureActivity.this, LoginActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,11 +203,27 @@ public class AddLectureActivity extends AppCompatActivity{
                             NotificationCompat.Builder builder = new NotificationCompat.Builder(AddLectureActivity.this, "My Notification");
                             builder.setSmallIcon(R.drawable.ic_baseline_chat_24);
                             builder.setContentTitle("new lecture was upload");
-                            builder.setContentText("A New lecture " + lecture.getLectureName() + " was upload to the course " + lecture.getCourseId());
-                            builder.setAutoCancel(true);
+                            Query coursequery = FirebaseDatabase.getInstance().getReference().child("Courses").child("").orderByChild("courseId").equalTo(lecture.getCourseId());
+                            coursequery.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot data : snapshot.getChildren()) {
+                                        Course c = data.getValue(Course.class);
+                                        coursename=c.getCourseName();
+                                        builder.setContentText("A New lecture " + lecture.getLectureName() + " was upload to the course " + coursename);
+                                        builder.setAutoCancel(true);
 
-                            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(AddLectureActivity.this);
-                            managerCompat.notify(1, builder.build());
+                                        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(AddLectureActivity.this);
+                                        managerCompat.notify(1, builder.build());
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }});
+
                         } else {
                             Toast.makeText(AddLectureActivity.this, "Failed",
                                     Toast.LENGTH_SHORT).show();

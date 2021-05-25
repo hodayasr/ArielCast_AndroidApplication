@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
     android:orientation="vertical"
     tools:context=".AddLectureActivity"
     android:background="@drawable/capture">
@@ -17,16 +16,16 @@
         />
 
     <EditText
+        android:id="@+id/et_video_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Video lecturename"
-        android:textSize="20dp"
-        android:id="@+id/et_video_name"
         android:layout_margin="10dp"
-        android:backgroundTint="@color/design_default_color_background"
-        android:textColor="@android:color/black"
         android:autoText="true"
-        />
+        android:backgroundTint="@color/design_default_color_background"
+        android:hint="Video lecturename"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,16 +33,6 @@
         android:text="Choose video"
         android:clickable="true"
         android:onClick="ChooseVideo"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show video"
-        android:clickable="true"
-        android:onClick="ShowVideo"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         />
@@ -62,13 +51,12 @@
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <ProgressBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
         android:indeterminate="true"
         android:indeterminateTint="@android:color/holo_purple"
-        android:visibility="invisible"
-        android:id="@+id/progressBar"
-        />
+        android:visibility="invisible" />
 
 </LinearLayout>
