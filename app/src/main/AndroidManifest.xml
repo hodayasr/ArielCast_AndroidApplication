@@ -27,7 +27,7 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_lecturer"
             android:theme="@style/Theme.ArielCast.NoActionBar" />
-        <activity android:name=".AddLectureActivity" />
+        <activity android:name=".AddLectureActivity" android:theme="@style/Theme.ArielCast.NoActionBar"/>
         <activity
             android:name=".StudentActivity"
             android:label="@string/title_activity_lecturer"
