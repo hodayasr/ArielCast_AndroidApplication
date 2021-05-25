@@ -7,34 +7,13 @@
     android:background="@drawable/capture"
     tools:context=".RegisterUser">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="406dp"
-        android:layout_height="52dp"
-        android:layout_marginBottom="123dp"
-        android:theme="@style/Theme.ArielCast.AppBarOverlay"
-        app:layout_constraintBottom_toTopOf="@+id/fullName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/BackButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:onClick="onClick"
-            android:text=" Back"
-            android:textSize="30sp" />
-
-
-    </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
         android:id="@+id/banner"
         android:layout_width="283dp"
         android:layout_height="87dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="68dp"
         android:fontFamily="casual"
         android:text="ArielCast"
         android:textAlignment="center"
@@ -54,7 +33,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/banner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.158"
+        app:layout_constraintVertical_bias="0.384"
         app:srcCompat="@mipmap/ic_bannerlogo_foreground"
         tools:srcCompat="@mipmap/ic_bannerlogo_foreground" />
 
@@ -71,23 +50,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password"
-        tools:ignore="MissingConstraints" />
-
-    <EditText
-        android:id="@+id/emailAdress"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="19dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phone"
         tools:ignore="MissingConstraints" />
 
     <EditText
@@ -120,8 +82,45 @@
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/register"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailAdress"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/fullName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="556dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="full_name"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/emailAdress"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="19dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phone"
         tools:ignore="MissingConstraints" />
 
     <ProgressBar
@@ -134,23 +133,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/fullName"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="538dp"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="full_name"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        tools:ignore="MissingConstraints" />
 
     <CheckBox
         android:id="@+id/cbLecturer"

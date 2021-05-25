@@ -9,8 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -28,6 +32,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,7 +60,7 @@ public class ShowCourse extends AppCompatActivity {
     ImageButton deleteButton ,editButton;
     FloatingActionButton fab;
     DatabaseReference ref;
-    int position;
+    static int position;
     String Id,email,cID , courseName,start,end ,imageurl ,lecturerID;
     DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
     DatabaseReference DataRef;
@@ -153,6 +158,7 @@ public class ShowCourse extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    position=0; // lecturer !!
                     for(DataSnapshot data:snapshot.getChildren()) {
                         fab.setVisibility(View.VISIBLE);
                         deleteButton.setVisibility(View.VISIBLE);
@@ -297,6 +303,7 @@ public class ShowCourse extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if (snapshot.exists()) {
+                                position=1; // student !!
                                 for (DataSnapshot data : snapshot.getChildren()) {
                                     fab.setVisibility(View.INVISIBLE);
                                     deleteButton.setVisibility(View.INVISIBLE);
@@ -333,6 +340,33 @@ public class ShowCourse extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(position==0) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.main_menu, menu);
+        }
+        else if(position==1)
+        {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.student_menu, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            logOut();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(ShowCourse.this, LoginActivity.class));
+    }
 
     private ArrayList<Lecture> getMyList(){
         lectures = new ArrayList<>();

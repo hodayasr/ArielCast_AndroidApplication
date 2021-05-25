@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -49,8 +52,23 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
         editTextPassword = findViewById(R.id.password);
         editTextPhone = findViewById(R.id.phone);
         progressBar = findViewById(R.id.progressBar);
+
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.login_menu, menu);
+        return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            //logOut();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
@@ -63,10 +81,7 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
             else
                 registerUser(v);
         }
-        else  if (v.getId() == R.id.BackButton)
-        {
-            startActivity(new Intent(this, LoginActivity.class));
-        }
+
     }
 
     private void registerUser(View v) {

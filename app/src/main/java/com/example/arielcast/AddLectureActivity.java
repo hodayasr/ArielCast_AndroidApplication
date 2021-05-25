@@ -3,6 +3,7 @@ package com.example.arielcast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -64,23 +65,6 @@ public class AddLectureActivity extends AppCompatActivity{
     String lecturerEmail,lecId,cId;
     String coursename;
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.logout) {
-            logOut();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void logOut() {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(AddLectureActivity.this, LoginActivity.class));
@@ -108,6 +92,8 @@ public class AddLectureActivity extends AppCompatActivity{
         videoView.setMediaController(mediaController);
         videoView.start();
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel = new NotificationChannel("My Notification","My Notification", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager manager = getSystemService(NotificationManager.class);
@@ -121,7 +107,21 @@ public class AddLectureActivity extends AppCompatActivity{
             }
         });
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            logOut();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
