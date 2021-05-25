@@ -8,5 +8,11 @@
         android:title="@string/watch_later_playlist" />
     <item android:id="@+id/logout"
         android:title="@string/logout"/>
+    <item
+        android:id="@+id/aboutus"
+        android:title="About us" />
+    <item
+        android:id="@+id/help"
+        android:title="Help" />
 
 </menu>

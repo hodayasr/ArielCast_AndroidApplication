@@ -63,6 +63,10 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
             else
                 registerUser(v);
         }
+        else  if (v.getId() == R.id.BackButton)
+        {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
     }
 
     private void registerUser(View v) {
