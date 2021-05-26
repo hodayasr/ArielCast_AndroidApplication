@@ -82,10 +82,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             userLogin();
         }
 
-        if (v.getId() == R.id.phoneBook){
-            startActivity(new Intent(this, PhonebookActivity.class));
-        }
-
 
         if(v.getId() == R.id.setNewPassword) {
             String email = editTextEmail.getText().toString().trim();
