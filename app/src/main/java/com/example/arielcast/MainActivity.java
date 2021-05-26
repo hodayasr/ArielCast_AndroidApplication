@@ -142,8 +142,4 @@ public class MainActivity extends AppCompatActivity {
         return courses;
     }
 
-    public void aboutusfun() {
-        Toast.makeText(MainActivity.this, "still dont exists!",
-                Toast.LENGTH_LONG).show();
-    }
 }
