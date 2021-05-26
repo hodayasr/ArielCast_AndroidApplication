@@ -40,4 +40,5 @@
     <string name="title_activity_mail">MailActivity</string>
     <string name="watch_later_playlist">Watch Later Playlist</string>
     <string name="my_courses">My Courses</string>
+    <string name="title_activity_phonebook">PhonebookActivity</string>
 </resources>
