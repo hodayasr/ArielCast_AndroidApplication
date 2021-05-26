@@ -103,8 +103,15 @@ public class MailActivity extends AppCompatActivity {
                                 Toast.makeText(MailActivity.this,
                                         "email sent !",
                                         Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(MailActivity.this, StudentActivity.class));
+                                /*
+                                Intent in = new Intent(MailActivity.this, StudentActivity.class);
+                                in.putExtra(userId,"ID");
+                                in.putExtra(userKind,"userKind");
+                                startActivity(in);
 
+                                 */
+
+                                finish();
                             } catch (Exception e) {
                                 Toast.makeText(MailActivity.this,
                                         "email not sent !",
@@ -155,8 +162,14 @@ public class MailActivity extends AppCompatActivity {
                                                     Toast.makeText(MailActivity.this,
                                                             "email sent !",
                                                             Toast.LENGTH_LONG).show();
-                                                    startActivity(new Intent(MailActivity.this,MainActivity.class));
 
+                                                  /*  Intent in = new Intent(MailActivity.this, MainActivity.class);
+                                                    in.putExtra(lecturerId,"ID");
+                                                    in.putExtra(userKind,"userKind");
+                                                    startActivity(in);
+
+                                                   */
+                                                    finish();
                                                 } catch (Exception e) {
                                                     Toast.makeText(MailActivity.this,
                                                             "email not sent !",
