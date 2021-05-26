@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -139,5 +140,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         return courses;
+    }
+
+    public void aboutusfun() {
+        Toast.makeText(MainActivity.this, "still dont exists!",
+                Toast.LENGTH_LONG).show();
     }
 }

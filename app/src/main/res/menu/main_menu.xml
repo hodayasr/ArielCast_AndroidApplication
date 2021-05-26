@@ -4,7 +4,8 @@
         android:title="@string/logout"/>
     <item
         android:id="@+id/aboutus"
-        android:title="About us" />
+        android:title="About us"
+        android:onClick="aboutusfun"/>
     <item
         android:id="@+id/help"
         android:title="Help" />
