@@ -7,15 +7,7 @@
     android:background="@drawable/capture"
     tools:context=".RegisterUser">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="57dp"
-        android:theme="@style/Theme.ArielCast.AppBarOverlay"
-        tools:ignore="MissingConstraints">
 
-
-    </com.google.android.material.appbar.AppBarLayout>
     <TextView
         android:id="@+id/banner"
         android:layout_width="283dp"
@@ -110,7 +102,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
         tools:ignore="MissingConstraints" />
 
     <EditText
