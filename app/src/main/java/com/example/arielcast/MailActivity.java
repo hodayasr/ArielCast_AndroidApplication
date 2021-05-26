@@ -103,6 +103,7 @@ public class MailActivity extends AppCompatActivity {
                                 Toast.makeText(MailActivity.this,
                                         "email sent !",
                                         Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(MailActivity.this, StudentActivity.class));
 
                             } catch (Exception e) {
                                 Toast.makeText(MailActivity.this,
@@ -145,7 +146,7 @@ public class MailActivity extends AppCompatActivity {
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 String stuemail=snapshot.child("email").getValue(String.class);
                                                 try {
-                                                    GMailSender sender = new GMailSender("castariel01@gmail.com", "cast123456");
+                                                    GMailSender sender = new GMailSender("castariel01@gmail.com", "cast@1234567");
                                                     sender.sendMail(title.getText().toString().trim(),
                                                             content.getText().toString().trim(),
                                                             "castariel01@gmail.com",
@@ -154,6 +155,7 @@ public class MailActivity extends AppCompatActivity {
                                                     Toast.makeText(MailActivity.this,
                                                             "email sent !",
                                                             Toast.LENGTH_LONG).show();
+                                                    startActivity(new Intent(MailActivity.this,MainActivity.class));
 
                                                 } catch (Exception e) {
                                                     Toast.makeText(MailActivity.this,

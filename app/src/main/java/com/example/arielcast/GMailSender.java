@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,13 +13,18 @@ import java.security.Security;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.Message;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.sql.DataSource;
+import javax.mail.internet.MimeMultipart;
+
 
 
 public class GMailSender extends javax.mail.Authenticator {
@@ -64,6 +70,25 @@ public class GMailSender extends javax.mail.Authenticator {
             message.setSender(new InternetAddress(sender));
             message.setSubject(subject);
             message.setDataHandler(handler);
+          /*  Multipart multipart = new MimeMultipart();
+
+            // creates body part for the message
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setContent(message, "text/html");
+            multipart.addBodyPart(messageBodyPart);
+
+            // JavaMail 1.3
+            MimeBodyPart attachPart = new MimeBodyPart();
+            String attachFile = "C:/Users/Hodaya/Documents/Apowersoft/Apowersoft Online Screen Recorder/20210421_090418.mp4";
+
+            DataSource source = new FileDataSource(attachFile);
+            attachPart.setDataHandler(new DataHandler(source));
+            attachPart.setFileName(new File(attachFile).getName());
+
+            multipart.addBodyPart(attachPart);
+
+            message.setContent(multipart);*/
+
             if (recipients.indexOf(',') > 0)
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
             else
