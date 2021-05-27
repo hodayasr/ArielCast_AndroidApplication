@@ -1,6 +1,8 @@
 package com.example.arielcast;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,19 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookHolder> {
         holder.mTitle.setText(lecturers.get(position).getFullname());
         holder.mEmail.setText(lecturers.get(position).getEmail());
         holder.mPhone.setText(lecturers.get(position).getPhone());
+
+   /*     holder.mPhone.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                String phone_no= lecturers.get(position).getPhone().toString();
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:"+phone_no));
+                //callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(callIntent);
+            }
+        });*/
 
     }
 

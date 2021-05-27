@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.arielcast">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -7,10 +8,11 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/logoarielcast1"
-        android:label="@string/arielcast"
+        android:label="ArielCast"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ArielCast">
+        android:theme="@style/Theme.ArielCast"
+        tools:ignore="MissingClass">
         <activity
             android:name=".PhonebookActivity"
             android:label="@string/title_activity_phonebook"
