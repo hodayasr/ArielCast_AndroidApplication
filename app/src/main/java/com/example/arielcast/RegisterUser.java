@@ -156,8 +156,10 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
                                                 "user has been registered successfully!",
                                                 Toast.LENGTH_LONG).show();
 
-                                        // back to Main Screen - login
-                                        Intent intent = new Intent(v.getContext(), LoginActivity.class);
+                                        // back to Main Screen
+                                        Intent intent = new Intent(RegisterUser.this, StudentActivity.class);
+                                        intent.putExtra("Email", email);
+                                        intent.putExtra("ID", sId);
                                         startActivity(intent);
                                     } else
                                         Toast.makeText(RegisterUser.this,
@@ -248,8 +250,10 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
                                                 "user has been registered successfully!",
                                                 Toast.LENGTH_LONG).show();
 
-                                        // back to Main Screen - login
-                                        Intent intent = new Intent(v.getContext(), LoginActivity.class);
+                                        // back to Main Screen
+                                        Intent intent = new Intent(RegisterUser.this, MainActivity.class);
+                                        intent.putExtra("Email", email);
+                                        intent.putExtra("ID", LecId);
                                         startActivity(intent);
                                     } else {
                                         Toast.makeText(RegisterUser.this,
