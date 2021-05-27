@@ -1,6 +1,7 @@
 package com.example.arielcast;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
     private CheckBox cb;
+    Dialog myDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +79,48 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, LoginActivity.class));
         else if (v.getId() == R.id.register) {
             cb = findViewById(R.id.cbLecturer);
-            if (cb.isChecked())
-                registerLecturer(v);
-            else
+            if (cb.isChecked()) {
+
+                // if its lecturer - show Dialog with codeRequest
+                myDialog =new Dialog(RegisterUser.this);
+                myDialog.setContentView(R.layout.code_request_dialog);
+                myDialog.setTitle("Code Request");
+                TextView hello=(TextView) myDialog.findViewById(R.id.hello);
+                EditText code=(EditText)myDialog.findViewById(R.id.code);
+                Button db=(Button)myDialog.findViewById(R.id.continueb) ; //continue button
+                Button cb=(Button)myDialog.findViewById(R.id.cb) ; //cancle button
+                ImageView iv=(ImageView)myDialog.findViewById(R.id.imv) ;
+                myDialog.show();
+               cb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myDialog.cancel();
+                    }
+                }); // cancel !!
+
+                //check this code
+                db.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View v) {
+                                              if(code.getText().toString().equals("ArielCast2021@ariel.ac.il"))
+                                              {
+                                                  myDialog.cancel();
+                                                  // register as lecturer
+                                                  registerLecturer(v);
+
+                                              }
+                                              else
+                                              {
+                                                  Toast.makeText(RegisterUser.this, "Try again - "+code.getText().toString()+"",
+                                                          Toast.LENGTH_SHORT).show();
+                                              }
+                                          }
+                                      });
+
+            }
+            else {
                 registerUser(v);
+            }
         }
 
     }

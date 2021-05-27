@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.example.arielcast.firebase.model.dataObject.StudentCourses;
 import com.example.arielcast.firebase.model.dataObject.WatchLaterLec;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -120,7 +119,7 @@ public class ShowLecture extends AppCompatActivity {
                                 myDialog.setTitle("Delete this lecture ?");
                                 TextView hello=(TextView) myDialog.findViewById(R.id.hello);
                                 hello.setText("Are you sure you want to delete this lecture ?");
-                                Button db=(Button)myDialog.findViewById(R.id.editb) ;
+                                Button db=(Button)myDialog.findViewById(R.id.continueb) ;
                                 Button cb=(Button)myDialog.findViewById(R.id.cb) ;
                                 db.setText("Delete this lecture");
                                 ImageView iv=(ImageView)myDialog.findViewById(R.id.imv) ;

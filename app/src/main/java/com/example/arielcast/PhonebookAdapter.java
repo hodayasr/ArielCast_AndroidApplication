@@ -20,6 +20,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookHolder> {
     Context context;
@@ -44,18 +47,6 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookHolder> {
         holder.mEmail.setText(lecturers.get(position).getEmail());
         holder.mPhone.setText(lecturers.get(position).getPhone());
 
-   /*     holder.mPhone.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                String phone_no= lecturers.get(position).getPhone().toString();
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:"+phone_no));
-                //callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(callIntent);
-            }
-        });*/
 
     }
 

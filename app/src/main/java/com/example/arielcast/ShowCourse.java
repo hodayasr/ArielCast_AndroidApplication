@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -174,7 +173,7 @@ public class ShowCourse extends AppCompatActivity {
                                 myDialog.setContentView(R.layout.delete_course_dialog);
                                 myDialog.setTitle("Delete this course ?");
                                 TextView hello=(TextView) myDialog.findViewById(R.id.hello);
-                                Button db=(Button)myDialog.findViewById(R.id.editb) ;
+                                Button db=(Button)myDialog.findViewById(R.id.continueb) ;
                                 Button cb=(Button)myDialog.findViewById(R.id.cb) ;
                                 ImageView iv=(ImageView)myDialog.findViewById(R.id.imv) ;
                                 myDialog.show();
@@ -242,7 +241,7 @@ public class ShowCourse extends AppCompatActivity {
                                     }
                                 });
 
-                                Button editb=(Button)myDialog.findViewById(R.id.editb) ;
+                                Button editb=(Button)myDialog.findViewById(R.id.continueb) ;
                                 Button cb=(Button)myDialog.findViewById(R.id.cb) ;
                                 cb.setOnClickListener(new View.OnClickListener() {
                                     @Override

@@ -28,6 +28,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PhonebookActivity extends AppCompatActivity {
 
@@ -65,8 +66,6 @@ public class PhonebookActivity extends AppCompatActivity {
                     Lecturer l = data.getValue(Lecturer.class);
                     lecturers.add(l);
                     myAdapter.notifyDataSetChanged();
-
-
                 }
 
             }
@@ -76,8 +75,8 @@ public class PhonebookActivity extends AppCompatActivity {
 
             }
         });
-
-        return lecturers;
+        //Collections.sort(lecturers);
+        return lecturers ;
     }
 
     public void onClick(View v) {
