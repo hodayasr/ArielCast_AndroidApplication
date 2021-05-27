@@ -26,12 +26,14 @@
         <activity
             android:name=".ShowLecture"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".ShowCourse" />
+        <activity android:name=".ShowCourse" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_lecturer"
-            android:theme="@style/Theme.ArielCast.NoActionBar" />
-        <activity android:name=".AddLectureActivity" />
+            android:theme="@style/Theme.ArielCast.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity android:name=".AddLectureActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".StudentActivity"
             android:label="@string/title_activity_lecturer"

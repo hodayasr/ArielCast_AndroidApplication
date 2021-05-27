@@ -195,6 +195,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
                                 }
                                 }
+
+                             if(courses.isEmpty())
+                            {
+                                holder.mTitle.setText("There no Courses yet");
+                            }
                         }
 
                         @Override

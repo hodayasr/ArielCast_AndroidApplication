@@ -1,5 +1,6 @@
 package com.example.arielcast;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        closeKeyboard();
     }
 
     @Override
@@ -137,10 +139,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(courses.isEmpty())
                 {
+
                     text.setVisibility(View.VISIBLE);
                     text.setText("");
                     text.setError("Add New Course here",null);
                     text.requestFocus();
+                    closeKeyboard();
                     return;
                 }
 
@@ -154,5 +158,11 @@ public class MainActivity extends AppCompatActivity {
 
         return courses;
     }
-
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }

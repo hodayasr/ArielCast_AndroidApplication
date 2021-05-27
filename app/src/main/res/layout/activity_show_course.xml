@@ -26,12 +26,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="14dp"
+            android:layout_marginBottom="174dp"
             android:text="@string/main_title"
             android:textColor="#000"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/textViewSub"
+            app:layout_constraintBottom_toTopOf="@+id/textView3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,13 +65,15 @@
             android:id="@+id/floatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
             android:onClick="onfabClick"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/deleteButton5"
+            app:layout_constraintVertical_bias="0.977"
             app:srcCompat="@android:drawable/ic_input_add" />
 
         <ImageButton
@@ -80,6 +82,7 @@
             android:layout_height="33dp"
             android:layout_marginStart="50dp"
             android:layout_marginBottom="12dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/watch_later_recycleView"
             app:layout_constraintEnd_toStartOf="@+id/deleteButton5"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,16 +91,30 @@
 
         <ImageButton
             android:id="@+id/deleteButton5"
+            android:layout_width="110dp"
+            android:layout_height="33dp"
+            android:layout_marginEnd="34dp"
+            android:layout_marginBottom="601dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/delete_button" />
+
+        <TextView
+            android:id="@+id/textView3"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="81dp"
-            android:layout_marginEnd="34dp"
-            android:layout_marginBottom="515dp"
-            app:layout_constraintBottom_toTopOf="@+id/floatingActionButton"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="322dp"
+            android:text="There are no lectures in this course yet"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/editButton5"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/delete_button" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewMain" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

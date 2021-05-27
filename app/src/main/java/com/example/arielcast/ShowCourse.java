@@ -68,6 +68,7 @@ public class ShowCourse extends AppCompatActivity {
     ImageView courseImage;
     Uri NewimageUri;
     StorageReference storageReference;
+    TextView tv3;
 
 
     @Override
@@ -82,6 +83,7 @@ public class ShowCourse extends AppCompatActivity {
         deleteButton = findViewById(R.id.deleteButton5);
         editButton = findViewById(R.id.editButton5);
         fab=findViewById(R.id.floatingActionButton);
+        tv3=findViewById(R.id.textView3);
         ref = FirebaseDatabase.getInstance().getReference().child("Courses");
 
         lecturesListView = findViewById(R.id.watch_later_recycleView);
@@ -381,6 +383,8 @@ public class ShowCourse extends AppCompatActivity {
                     lectures.add(c);
                     myAdapter.notifyDataSetChanged();
                 }
+
+                if(!snapshot.exists()) tv3.setVisibility(View.VISIBLE);
 
             }
 
