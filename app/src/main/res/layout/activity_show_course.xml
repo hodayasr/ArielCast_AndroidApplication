@@ -78,27 +78,28 @@
 
         <ImageButton
             android:id="@+id/editButton5"
-            android:layout_width="110dp"
-            android:layout_height="33dp"
+            android:layout_width="41dp"
+            android:layout_height="42dp"
             android:layout_marginStart="50dp"
             android:layout_marginBottom="12dp"
+            android:background="@android:drawable/ic_menu_edit"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/watch_later_recycleView"
             app:layout_constraintEnd_toStartOf="@+id/deleteButton5"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewSub"
-            app:srcCompat="@drawable/edit_button" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewSub" />
 
         <ImageButton
             android:id="@+id/deleteButton5"
-            android:layout_width="110dp"
-            android:layout_height="33dp"
-            android:layout_marginEnd="34dp"
-            android:layout_marginBottom="601dp"
+            android:layout_width="36dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="592dp"
+            android:background="@android:drawable/ic_menu_delete"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/delete_button" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/textView3"
