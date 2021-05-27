@@ -31,6 +31,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookHolder> {
     public PhonebookAdapter(Context context,ArrayList<Lecturer> l) {
         this.context = context;
         this.lecturers = l;
+
     }
 
     @NonNull
@@ -42,7 +43,13 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PhonebookHolder holder, int position) {
+        Collections.sort(lecturers, new Comparator<Lecturer>() {
+            @Override
+            public int compare(Lecturer o1, Lecturer o2) {
+                return o1.getFullname().charAt(0) < o2.getFullname().charAt(0) ? -1 : (o1.getFullname().charAt(0) < o2.getFullname().charAt(0) ) ? 1 : 0;
+            }
 
+        });
         holder.mTitle.setText(lecturers.get(position).getFullname());
         holder.mEmail.setText(lecturers.get(position).getEmail());
         holder.mPhone.setText(lecturers.get(position).getPhone());
