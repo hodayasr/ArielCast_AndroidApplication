@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Course> courses ;
     String email ,lecId , password;
     SharedPreferences sharedPreferences;
+    EditText text;
 
     private static final String SHARED_PREF_NAME="mypfer";
     private static final String KEY_PASS="password";
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
          lecId=sharedPreferences.getString("ID",null);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        text=findViewById(R.id.textview);
         coursesListView = findViewById(R.id.watch_later_recycleView);
         coursesListView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         coursesListView.setHasFixedSize(true);
@@ -91,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     @Override
@@ -128,7 +134,14 @@ public class MainActivity extends AppCompatActivity {
                     courses.add(c);
                     myAdapter.notifyDataSetChanged();
 
-
+                }
+                if(courses.isEmpty())
+                {
+                    text.setVisibility(View.VISIBLE);
+                    text.setText("");
+                    text.setError("Add New Course here",null);
+                    text.requestFocus();
+                    return;
                 }
 
             }

@@ -26,18 +26,38 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/watch_later_recycleView"
         android:layout_width="match_parent"
-        android:layout_height="591dp" />
+        android:layout_height="622dp" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="92dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="visible"
-        app:fabSize="normal"
-        app:srcCompat="@android:drawable/ic_input_add"
-        tools:ignore="ContentDescription" />
 
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="102dp"
+        android:layout_gravity="bottom|right">
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:focusable="true"
+            android:visibility="visible"
+            app:fabSize="normal"
+            app:srcCompat="@android:drawable/ic_input_add" />
+
+        <EditText
+            android:id="@+id/textview"
+            android:layout_width="62dp"
+            android:layout_height="37dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="5dp"
+            android:elevation="16dp"
+            android:text="please add a new course here ! "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/purple_700"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+    </FrameLayout>
 </LinearLayout>
 
