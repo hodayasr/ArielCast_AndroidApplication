@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#80A6A2"
+    android:background="@color/ic_banner_background"
     android:orientation="vertical">
 
     <ImageView
@@ -14,8 +14,8 @@
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:contentDescription="ArielCast"
-        app:srcCompat="@drawable/capture222"
-        tools:srcCompat="@drawable/capture222" />
+        app:srcCompat="@mipmap/ic_bannerlogo222_foreground"
+        tools:srcCompat="@mipmap/ic_bannerlogo222_foreground" />
 
     <LinearLayout
         android:layout_width="match_parent"

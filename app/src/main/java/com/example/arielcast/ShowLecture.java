@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,13 +32,15 @@ import com.google.firebase.database.ValueEventListener;
 public class ShowLecture extends AppCompatActivity {
     String lectureID;
     String videoPath;
-    EditText lecture_name;
+    TextView lecture_name;
     ImageButton editButton,deleteButton , addToPlaylist;
     TextView lecNameText , dateText;
     DatabaseReference dataRef;
     FirebaseDatabase database;
     String lecturername;
     Dialog myDialog;
+    ImageButton button;
+    Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +66,8 @@ public class ShowLecture extends AppCompatActivity {
                 if (snapshot.exists()){
                     // remove from playlist
                     Drawable d = ContextCompat.getDrawable(ShowLecture.this, R.drawable.ic_baseline_playlist_add_check_24);
-                    addToPlaylist.setImageDrawable(d);
+                    //addToPlaylist.setImageDrawable(d);
+                    addToPlaylist.setBackground(d);
                     addToPlaylist.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -74,7 +79,8 @@ public class ShowLecture extends AppCompatActivity {
                 } else {
                     // add to playlist
                     Drawable d = ContextCompat.getDrawable(ShowLecture.this, R.drawable.capture1212);
-                    addToPlaylist.setImageDrawable(d);
+                    //addToPlaylist.setImageDrawable(d);
+                    addToPlaylist.setBackground(d);
                     addToPlaylist.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -163,10 +169,11 @@ public class ShowLecture extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
                     videoPath = snapshot.child("video_url").getValue(String.class);
-                    Uri uri = Uri.parse(videoPath);
+                    uri = Uri.parse(videoPath);
                     videoView.setVideoURI(uri);
                     videoView.requestFocus();
                     videoView.start();
+
 
                     String date = snapshot.child("date").getValue(String.class);
                     dateText.setText(snapshot.child("date").getValue(String.class));
@@ -185,6 +192,33 @@ public class ShowLecture extends AppCompatActivity {
 
                         }
                     });
+
+                    // download button !
+
+                    button = (ImageButton) findViewById(R.id.downloadbutton);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DownloadManager.Request r = new DownloadManager.Request(uri);
+
+                            // This put the download in the same Download dir the browser uses
+                            r.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, lecture_name.getText().toString());
+
+                            // When downloading music and videos they will be listed in the player
+                            // (Seems to be available since Honeycomb only)
+                            r.allowScanningByMediaScanner();
+
+                            // Notify user when download is completed
+                            // (Seems to be available since Honeycomb only)
+                            r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+                            // Start download
+                            DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                            dm.enqueue(r);
+                            Toast.makeText(ShowLecture.this, "starting download.. be patient", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 }
             }
 
@@ -197,6 +231,7 @@ public class ShowLecture extends AppCompatActivity {
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
         mediaController.setAnchorView(videoView);
+
 
     }
 }
