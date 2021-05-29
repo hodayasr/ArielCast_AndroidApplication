@@ -106,7 +106,7 @@ public class ShowCourse extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                  imageurl=snapshot.child("image").getValue(String.class);
-                Picasso.with(getApplicationContext()).load(imageurl).fit().into((ImageView)imageView);
+                Picasso.with(getApplicationContext()).load(imageurl).fit().into(imageView);
             }
 
             @Override
@@ -156,8 +156,71 @@ public class ShowCourse extends AppCompatActivity {
         Query query = myRef.child("Lecturers").orderByChild("lecturerId").equalTo(Id);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
+            private void onClick(View v) {
+                myDialog = new Dialog(ShowCourse.this);
+                myDialog.setContentView(R.layout.edit_course_dialog);
+                myDialog.setTitle("Edit this course ");
+                EditText course_name = myDialog.findViewById(R.id.insertNewCourseName);
+                course_name.setText(courseName);
+                EditText courseStart = myDialog.findViewById(R.id.editTextStartDate);
+                courseStart.setText(start);
+                EditText courseEnd = myDialog.findViewById(R.id.editTextEndDate);
+
+                courseEnd.setText(end);
+                courseImage = myDialog.findViewById(R.id.imageView3);
+                Picasso.with(getApplicationContext()).load(imageurl).fit().into(courseImage);
+                Button changeImage = myDialog.findViewById(R.id.updateCourseImage);
+                changeImage.setOnClickListener(v13 -> {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent, PICK_IMAGE);
+                });
+
+                Button editb = myDialog.findViewById(R.id.continueb);
+                Button cb = myDialog.findViewById(R.id.cb);
+                cb.setOnClickListener(v14 -> myDialog.cancel());
+                ImageView iv = myDialog.findViewById(R.id.imv);
+
+                editb.setOnClickListener(v15 -> {
+                    // update course on FireBase database
+
+                    final StorageReference myRef = storageReference.child(currentTimeMillis() + "." + getExt(NewimageUri));
+                    Task<UploadTask.TaskSnapshot> uploadTask = myRef.putFile(NewimageUri);
+
+                    Task<Uri> taskurl = uploadTask.continueWithTask(task -> {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+                        return myRef.getDownloadUrl();
+                    }).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            DatabaseReference updateRef = FirebaseDatabase.getInstance().getReference().child("Courses").child(cID);
+                            Course c = new Course(cID, course_name.getText().toString(), lecturerID, courseStart.getText().toString()
+                                    , courseEnd.getText().toString(), downloadUri.toString());
+                            updateRef.setValue(c);
+                            Intent intent = new Intent(ShowCourse.this, ShowCourse.class);
+                            intent.putExtra("CourseId", cID);
+                            intent.putExtra("Email", email);
+                            intent.putExtra("ID", Id);
+                            startActivity(intent);
+                            Toast.makeText(ShowCourse.this, "Course updated!",
+                                    Toast.LENGTH_LONG).show();
+
+                        } else {
+                            Toast.makeText(ShowCourse.this, "Failed",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                });
+
+                myDialog.show();
+            }
+
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     position=0; // lecturer !!
                     for(DataSnapshot data:snapshot.getChildren()) {
@@ -166,143 +229,53 @@ public class ShowCourse extends AppCompatActivity {
                         editButton.setVisibility(View.VISIBLE);
 
                         //delete course :
-                        deleteButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                myDialog =new Dialog(ShowCourse.this);
-                                myDialog.setContentView(R.layout.delete_course_dialog);
-                                myDialog.setTitle("Delete this course ?");
-                                TextView hello=(TextView) myDialog.findViewById(R.id.hello);
-                                Button db=(Button)myDialog.findViewById(R.id.continueb) ;
-                                Button cb=(Button)myDialog.findViewById(R.id.cb) ;
-                                ImageView iv=(ImageView)myDialog.findViewById(R.id.imv) ;
-                                myDialog.show();
-                                cb.setOnClickListener(new View.OnClickListener() {
+                        deleteButton.setOnClickListener(v -> {
+                            myDialog =new Dialog(ShowCourse.this);
+                            myDialog.setContentView(R.layout.delete_course_dialog);
+                            myDialog.setTitle("Delete this course ?");
+                            TextView hello=(myDialog.findViewById(R.id.hello));
+                            Button db=myDialog.findViewById(R.id.continueb) ;
+                            Button cb=myDialog.findViewById(R.id.cb) ;
+                            ImageView iv=myDialog.findViewById(R.id.imv) ;
+                            myDialog.show();
+                            cb.setOnClickListener(v1 -> myDialog.cancel());
+                            db.setOnClickListener(v12 -> {
+                                DatabaseReference refe=FirebaseDatabase.getInstance().getReference().child("Courses");
+                                refe.child(cID).removeValue();
+
+                                // delete all lectures of this course
+                                Query leq=FirebaseDatabase.getInstance().getReference().child("Lectures").orderByChild("courseId").equalTo(cID);
+
+                                leq.addValueEventListener(new ValueEventListener() {
                                     @Override
-                                    public void onClick(View v) {
-                                        myDialog.cancel();
+                                    public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                                        for(DataSnapshot data1 : snapshot1.getChildren())
+                                        {
+                                            data1.getRef().removeValue();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
                                     }
                                 });
-                                db.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        DatabaseReference refe=FirebaseDatabase.getInstance().getReference().child("Courses");
-                                        refe.child(cID).removeValue();
-
-                                        // delete all lectures of this course
-                                        Query leq=FirebaseDatabase.getInstance().getReference().child("Lectures").orderByChild("courseId").equalTo(cID);
-
-                                        leq.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                for(DataSnapshot data:snapshot.getChildren())
-                                                {
-                                                    data.getRef().removeValue();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                        Intent i=new Intent(ShowCourse.this, MainActivity.class);
-                                        i.putExtra("ID",Id);
-                                        i.putExtra("Email",email);
-                                        startActivity(i);
-                                    }
-                                });
-                            }
+                                Intent i=new Intent(ShowCourse.this, MainActivity.class);
+                                i.putExtra("ID",Id);
+                                i.putExtra("Email",email);
+                                startActivity(i);
+                            });
                         });
 
                         // edit course : name ,StartDate ,EndDate ,image
-                        editButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                myDialog =new Dialog(ShowCourse.this);
-                                myDialog.setContentView(R.layout.edit_course_dialog);
-                                myDialog.setTitle("Edit this course ");
-                                EditText course_name=myDialog.findViewById(R.id.insertNewCourseName);
-                                course_name.setText(courseName);
-                                EditText courseStart=myDialog.findViewById(R.id.editTextStartDate);
-                                courseStart.setText(start);
-                                EditText courseEnd=myDialog.findViewById(R.id.editTextEndDate);;
-                                courseEnd.setText(end);
-                                courseImage=myDialog.findViewById(R.id.imageView3);
-                                Picasso.with(getApplicationContext()).load(imageurl).fit().into(courseImage);
-                                Button changeImage=myDialog.findViewById(R.id.updateCourseImage);
-                                changeImage.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                            Intent intent = new Intent();
-                                            intent.setType("image/*");
-                                            intent.setAction(Intent.ACTION_GET_CONTENT);
-                                            startActivityForResult(intent,PICK_IMAGE);
-                                    }
-                                });
-
-                                Button editb=(Button)myDialog.findViewById(R.id.continueb) ;
-                                Button cb=(Button)myDialog.findViewById(R.id.cb) ;
-                                cb.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        myDialog.cancel();
-                                    }
-                                });
-                                ImageView iv=(ImageView)myDialog.findViewById(R.id.imv) ;
-
-                                editb.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        // update course on FireBase database
-
-                                        final StorageReference myRef = storageReference.child(currentTimeMillis() + "." + getExt(NewimageUri));
-                                        Task uploadTask = myRef.putFile(NewimageUri);
-
-                                        Task<Uri> taskurl = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                            @Override
-                                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                                if (!task.isSuccessful()) {
-                                                    throw task.getException();
-                                                }
-                                                return myRef.getDownloadUrl();
-                                            }
-                                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                if (task.isSuccessful()) {
-                                                    Uri downloadUri = task.getResult();
-                                                    DatabaseReference updateRef=FirebaseDatabase.getInstance().getReference().child("Courses").child(cID);
-                                                    Course c=new Course(cID,course_name.getText().toString(),lecturerID,courseStart.getText().toString()
-                                                            ,courseEnd.getText().toString(),downloadUri.toString());
-                                                    updateRef.setValue(c);
-                                                    Intent intent=new Intent(ShowCourse.this,ShowCourse.class);
-                                                    intent.putExtra("CourseId",cID);
-                                                    intent.putExtra("Email",email);
-                                                    intent.putExtra("ID",Id);
-                                                    startActivity(intent);
-                                                    Toast.makeText(ShowCourse.this, "Course updated!",
-                                                            Toast.LENGTH_LONG).show();
-
-                                                } else {
-                                                    Toast.makeText(ShowCourse.this, "Failed",
-                                                            Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-
-                                    }
-                                });
-                                myDialog.show();
-                            }
-                        });
+                        editButton.setOnClickListener(this::onClick);
                     }
                 } else {
                     Query query = myRef.child("Students").orderByChild("studentId").equalTo(Id);
 
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot snapshot) {
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 position=1; // student !!
                                 for (DataSnapshot data : snapshot.getChildren()) {
@@ -372,7 +345,7 @@ public class ShowCourse extends AppCompatActivity {
     private ArrayList<Lecture> getMyList(){
         lectures = new ArrayList<>();
 
-        Query q = FirebaseDatabase.getInstance().getReference().child("Lectures").orderByChild("courseId").equalTo(cID);;
+        Query q = FirebaseDatabase.getInstance().getReference().child("Lectures").orderByChild("courseId").equalTo(cID);
 
         q.addValueEventListener(new ValueEventListener() {
             @Override

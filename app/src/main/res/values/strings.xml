@@ -47,5 +47,17 @@
     <string name="phone_book">Phone Book</string>
     <string name="contact_us">Contact Us</string>
     <string name="remember_me">Remember me</string>
+    <string name="todo2">TODO</string>
+    <string name="arielcastlogo1">ArielCast</string>
+    <string name="delete_this_course">delete this course</string>
+    <string name="cancel_" tools:ignore="ButtonCase">cancel</string>
+    <string name="are_you_sure_you_want_to_delete_this_course">Are you sure you want to delete this course ?</string>
+    <string name="update_course_image">update course image</string>
+    <string name="end_date_update">End Date</string>
+    <string name="start_date_update">Start Date</string>
+    <string name="coursename_update">courseName</string>
+    <string name="cancel1">@android:string/cancel</string>
+    <string name="edit_course_b">Edit Course</string>
+    <string name="arielcast_update_di">ArielCast</string>
     <string name="todo">TODO</string>
 </resources>
