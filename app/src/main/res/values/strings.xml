@@ -31,7 +31,7 @@
     <string name="semester">Semester</string>
     <string name="course_name">Course Name</string>
     <string name="main_title">Main Title</string>
-    <string name="todo">TODO</string>
+    <string name="todo1">TODO</string>
     <string name="sub_title">Sub Title</string>
     <string name="lecture_name">lecture_name</string>
     <string name="login_password">login_password</string>
@@ -41,4 +41,11 @@
     <string name="watch_later_playlist">Watch Later Playlist</string>
     <string name="my_courses">My Courses</string>
     <string name="title_activity_phonebook">PhonebookActivity</string>
+    <string name="arielcastlogo">ArielCast</string>
+    <string name="passwordval">password</string>
+    <string name="registerbutton">register</string>
+    <string name="phone_book">Phone Book</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="remember_me">Remember me</string>
+    <string name="todo">TODO</string>
 </resources>
