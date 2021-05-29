@@ -16,6 +16,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -49,10 +50,16 @@ public class MailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mail);
      //   Toolbar toolbar = findViewById(R.id.toolbar);
       //  setSupportActionBar(toolbar);
-        if (android.os.Build.VERSION.SDK_INT > 9) {
+
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
+        /*if (android.os.Build.VERSION.SDK_INT > 9) {*/ // unnecessary
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
-        }
+
 
         textView=findViewById(R.id.textView1);
         title=findViewById(R.id.editTextTextPersonName);
@@ -85,127 +92,124 @@ public class MailActivity extends AppCompatActivity {
             }
         });*/
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(userKind.equals("student"))
-                {
-                    // get lecturer email by lecId
-                    Query query = FirebaseDatabase.getInstance().getReference().child("Lecturers").child(lecturerId);
+        imageButton.setOnClickListener(v -> {
+            if(userKind.equals("student"))
+            {
+                // get lecturer email by lecId
+                Query query = FirebaseDatabase.getInstance().getReference().child("Lecturers").child(lecturerId);
 
-                    query.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                String email = snapshot.child("email").getValue(String.class);
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String email = snapshot.child("email").getValue(String.class);
 
-                            try {
-                                GMailSender sender = new GMailSender("castariel01@gmail.com", "cast123456");
-                                sender.sendMail(title.getText().toString().trim(),
-                                        content.getText().toString().trim(),
-                                        "castariel01@gmail.com",
-                                        email);
+                        try {
+                            GMailSender sender = new GMailSender("castariel01@gmail.com", "cast123456");
+                            sender.sendMail(title.getText().toString().trim(),
+                                    content.getText().toString().trim(),
+                                    "castariel01@gmail.com",
+                                    email);
 
-                                Toast.makeText(MailActivity.this,
-                                        "email sent !",
-                                        Toast.LENGTH_LONG).show();
-                                /*
-                                Intent in = new Intent(MailActivity.this, StudentActivity.class);
-                                in.putExtra(userId,"ID");
-                                in.putExtra(userKind,"userKind");
-                                startActivity(in);
+                            Toast.makeText(MailActivity.this,
+                                    "email sent !",
+                                    Toast.LENGTH_LONG).show();
+                            /*
+                            Intent in = new Intent(MailActivity.this, StudentActivity.class);
+                            in.putExtra(userId,"ID");
+                            in.putExtra(userKind,"userKind");
+                            startActivity(in);
 
-                                 */
+                             */
 
-                                finish();
-                            } catch (Exception e) {
-                                Toast.makeText(MailActivity.this,
-                                        "email not sent !",
-                                        Toast.LENGTH_LONG).show();
-                            }
-
+                            finish();
+                        } catch (Exception e) {
+                            Toast.makeText(MailActivity.this,
+                                    "email not sent !",
+                                    Toast.LENGTH_LONG).show();
                         }
 
-                            @Override
-                            public void onCancelled (@NonNull DatabaseError error){
-
-                            }
-                });
-                }
-                else if(userKind.equals("lecturer"))
-                {
-                    // get list of followers (students) of this course
-                    // and find their email - send massage all followers
-
-                    // get lecturer email by lecId
-                    Query query = FirebaseDatabase.getInstance().getReference().child("Courses").child(cId);
-
-                    query.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            String courseId = snapshot.child("courseId").getValue(String.class);
-
-                            //find students following
-                            Query quS = FirebaseDatabase.getInstance().getReference().child("StudentCourses").orderByChild("courseId").equalTo(cId);
-                            quS.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for(DataSnapshot data:snapshot.getChildren())
-                                    {
-                                        String studenti=data.child("studentId").getValue(String.class);
-                                        Query qs=FirebaseDatabase.getInstance().getReference().child("Students").child(studenti);
-                                        qs.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                String stuemail=snapshot.child("email").getValue(String.class);
-                                                try {
-                                                    GMailSender sender = new GMailSender("castariel01@gmail.com", "cast@1234567");
-                                                    sender.sendMail(title.getText().toString().trim(),
-                                                            content.getText().toString().trim(),
-                                                            "castariel01@gmail.com",
-                                                            stuemail);
-
-                                                    Toast.makeText(MailActivity.this,
-                                                            "email sent !",
-                                                            Toast.LENGTH_LONG).show();
-
-                                                  /*  Intent in = new Intent(MailActivity.this, MainActivity.class);
-                                                    in.putExtra(lecturerId,"ID");
-                                                    in.putExtra(userKind,"userKind");
-                                                    startActivity(in);
-
-                                                   */
-                                                    finish();
-                                                } catch (Exception e) {
-                                                    Toast.makeText(MailActivity.this,
-                                                            "email not sent !",
-                                                            Toast.LENGTH_LONG).show();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-
-
-                        }
+                    }
 
                         @Override
                         public void onCancelled (@NonNull DatabaseError error){
 
                         }
-                    });
+            });
+            }
+            else if(userKind.equals("lecturer"))
+            {
+                // get list of followers (students) of this course
+                // and find their email - send massage all followers
 
-                }
+                // get lecturer email by lecId
+                Query query = FirebaseDatabase.getInstance().getReference().child("Courses").child(cId);
+
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String courseId = snapshot.child("courseId").getValue(String.class);
+
+                        //find students following
+                        Query quS = FirebaseDatabase.getInstance().getReference().child("StudentCourses").orderByChild("courseId").equalTo(cId);
+                        quS.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot data:snapshot.getChildren())
+                                {
+                                    String studenti=data.child("studentId").getValue(String.class);
+                                    Query qs=FirebaseDatabase.getInstance().getReference().child("Students").child(studenti);
+                                    qs.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            String stuemail=snapshot.child("email").getValue(String.class);
+                                            try {
+                                                GMailSender sender = new GMailSender("castariel01@gmail.com", "cast@1234567");
+                                                sender.sendMail(title.getText().toString().trim(),
+                                                        content.getText().toString().trim(),
+                                                        "castariel01@gmail.com",
+                                                        stuemail);
+
+                                                Toast.makeText(MailActivity.this,
+                                                        "email sent !",
+                                                        Toast.LENGTH_LONG).show();
+
+                                              /*  Intent in = new Intent(MailActivity.this, MainActivity.class);
+                                                in.putExtra(lecturerId,"ID");
+                                                in.putExtra(userKind,"userKind");
+                                                startActivity(in);
+
+                                               */
+                                                finish();
+                                            } catch (Exception e) {
+                                                Toast.makeText(MailActivity.this,
+                                                        "email not sent !",
+                                                        Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled (@NonNull DatabaseError error){
+
+                    }
+                });
+
             }
         });
 
@@ -234,8 +238,18 @@ public class MailActivity extends AppCompatActivity {
             logOut();
             return true;
         }
+        else // this event will enable the back
+             // function to the button on press
+            if (item.getItemId() == android.R.id.home)
+            {
+                    this.finish();
+                    return true;
+            }
         return super.onOptionsItemSelected(item);
     }
+
+
+
 
     private void logOut() {
         FirebaseAuth.getInstance().signOut();

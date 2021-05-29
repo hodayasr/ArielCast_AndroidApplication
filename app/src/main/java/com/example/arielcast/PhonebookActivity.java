@@ -9,8 +9,12 @@ import com.example.arielcast.firebase.model.dataObject.Lecturer;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
@@ -42,11 +46,17 @@ public class PhonebookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phonebook);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         lecturerListView = findViewById(R.id.phonelist);
         lecturerListView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         lecturerListView.setHasFixedSize(true);
-        setSupportActionBar(toolbar);
+
 
         myAdapter = new PhonebookAdapter(this, getMyList());
 
@@ -56,7 +66,7 @@ public class PhonebookActivity extends AppCompatActivity {
     }
 
     private ArrayList<Lecturer> getMyList() {
-        lecturers=new ArrayList<Lecturer>();
+        lecturers= new ArrayList<>();
 
         Query q = FirebaseDatabase.getInstance().getReference().child("Lecturers");
 
@@ -80,11 +90,23 @@ public class PhonebookActivity extends AppCompatActivity {
         return lecturers ;
     }
 
-    public void onClick(View v) {
-        if (v.getId() == R.id.imageButton3)
-            startActivity(new Intent(this, LoginActivity.class));
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.login_menu, menu);
+        return true;
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+            // this event will enable the back
+            // function to the button on press
+        if (item.getItemId() == android.R.id.home)
+        {
+                    this.finish();
+                    return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

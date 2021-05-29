@@ -11,11 +11,10 @@
         android:label="ArielCast"
         android:roundIcon="@mipmap/ic_launcher"
         android:theme="@style/Theme.ArielCast"
-        tools:ignore="MissingClass">
+        tools:ignore="AllowBackup,MissingClass">
         <activity
             android:name=".PhonebookActivity"
-            android:label="@string/title_activity_phonebook"
-            android:theme="@style/Theme.ArielCast.NoActionBar"></activity>
+            android:label="Phonebook" />
         <activity android:name=".WatchLaterActivity" />
         <activity android:name=".StudentCoursesActivity" />
         <activity
