@@ -10,7 +10,6 @@
         android:icon="@drawable/logoarielcast1"
         android:label="ArielCast"
         android:roundIcon="@mipmap/ic_launcher"
-        android:supportsLtr="true"
         android:theme="@style/Theme.ArielCast"
         tools:ignore="MissingClass">
         <activity
