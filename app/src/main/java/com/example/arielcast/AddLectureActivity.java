@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import static java.lang.System.currentTimeMillis;
+import static java.lang.System.in;
 
 public class AddLectureActivity extends AppCompatActivity{
     private static final int PICK_VIDEO = 1;
@@ -135,7 +136,7 @@ public class AddLectureActivity extends AppCompatActivity{
 
     public void ChooseVideo(View view) {
         Intent intent = new Intent();
-        intent.setType("video/*");
+        intent.setType("video/*, audio/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,PICK_VIDEO);
     }

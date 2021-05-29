@@ -25,17 +25,15 @@
 
     <EditText
         android:id="@+id/emailAddress"
-        android:layout_width="347dp"
-        android:layout_height="0dp"
+        android:layout_width="341dp"
+        android:layout_height="57dp"
         android:layout_marginStart="6dp"
         android:layout_marginTop="196dp"
         android:layout_marginEnd="6dp"
-        android:layout_marginBottom="83dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/email_address"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/checkBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.519"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,17 +43,19 @@
     <EditText
         android:id="@+id/password1"
         android:layout_width="345dp"
-        android:layout_height="61dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="265dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/checkBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailAddress"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
     <Button
@@ -134,11 +134,15 @@
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="349dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="342dp"
+        android:layout_marginEnd="251dp"
+        android:layout_marginBottom="350dp"
         android:buttonTint="#303F9F"
         android:text="Remember me"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/password1"
-        app:layout_constraintTop_toBottomOf="@+id/emailAddress" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
