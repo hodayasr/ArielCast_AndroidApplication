@@ -26,7 +26,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/watch_later_recycleView"
         android:layout_width="match_parent"
-        android:layout_height="622dp" />
+        android:layout_height="606dp" />
 
 
     <FrameLayout
@@ -41,7 +41,8 @@
             android:layout_width="92dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:focusable="true"
             android:visibility="visible"
             app:fabSize="normal"

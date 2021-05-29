@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -20,6 +21,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,15 +39,16 @@ public class MailActivity extends AppCompatActivity {
     TextView textView;
     EditText title;
     TextInputEditText content;
-    ImageButton imageButton , backButton;
+    ImageButton imageButton ;
+    //backButton;
     String cId , lecturerId,userId,userKind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+     //   Toolbar toolbar = findViewById(R.id.toolbar);
+      //  setSupportActionBar(toolbar);
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -53,7 +58,7 @@ public class MailActivity extends AppCompatActivity {
         title=findViewById(R.id.editTextTextPersonName);
         content=findViewById(R.id.textInputEditText);
         imageButton=findViewById(R.id.imageButton);
-        backButton=findViewById(R.id.imageButton2);
+      //  backButton=findViewById(R.id.imageButton2);
 
         Intent intent = getIntent();
         cId=intent.getExtras().getString("CourseId");
@@ -62,7 +67,7 @@ public class MailActivity extends AppCompatActivity {
         userKind=intent.getExtras().getString("userKind");
 
 
-        backButton.setOnClickListener(new View.OnClickListener() {
+       /* backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(userKind.equals("student"))
@@ -78,7 +83,7 @@ public class MailActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
-        });
+        });*/
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,5 +211,34 @@ public class MailActivity extends AppCompatActivity {
 
 
 
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(userKind.equals("lecturer")) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.main_menu, menu);
+        }
+        else if(userKind.equals("student"))
+        {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.student_menu, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            logOut();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(MailActivity.this, LoginActivity.class));
     }
 }

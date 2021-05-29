@@ -20,22 +20,22 @@
         <activity android:name=".StudentCoursesActivity" />
         <activity
             android:name=".MailActivity"
-            android:label="@string/title_activity_mail"
-            android:theme="@style/Theme.ArielCast.NoActionBar" />
+            android:label="ArielCast"
+          />
         <activity
             android:name=".ShowLecture"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".ShowCourse" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_lecturer"
+            android:label="ArielCast"
             android:theme="@style/Theme.ArielCast.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity android:name=".AddLectureActivity" android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".StudentActivity"
-            android:label="@string/title_activity_lecturer"
+            android:label="ArielCast"
             android:theme="@style/Theme.ArielCast.NoActionBar" />
         <activity android:name=".RegisterUser" />
         <activity android:name=".AddCourseActivity" />

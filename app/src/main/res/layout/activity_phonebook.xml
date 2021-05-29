@@ -14,7 +14,6 @@
         android:layout_height="57dp"
         android:theme="@style/Theme.ArielCast.AppBarOverlay">
 
-
         <ImageButton
             android:id="@+id/imageButton3"
             android:layout_width="58dp"
