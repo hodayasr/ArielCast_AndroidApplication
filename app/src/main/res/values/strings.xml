@@ -60,4 +60,6 @@
     <string name="edit_course_b">Edit Course</string>
     <string name="arielcast_update_di">ArielCast</string>
     <string name="todo">TODO</string>
+    <string name="about_us">About us</string>
+
 </resources>
