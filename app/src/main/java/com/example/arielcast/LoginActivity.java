@@ -93,8 +93,50 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if(email.isEmpty()) {
                 editTextEmail.setError("email is required!");
                 editTextEmail.requestFocus();
-            } else
-                resetPassword();
+            } else // check if this email exists in our rt-DB
+            {
+                Query query = myRef.child("Lecturers").orderByChild("email").equalTo(email);
+
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            resetPassword();
+                        }
+                        else {
+
+                            Query query2 = myRef.child("Students").orderByChild("email").equalTo(email);
+                            query2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        resetPassword();
+                                    }
+                                    else
+                                    {
+                                        editTextEmail.setError("The email you entered is incorrect.");
+                                        editTextEmail.requestFocus();
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+                        }
+                    }
+
+
+
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+            }
         }
     }
 
