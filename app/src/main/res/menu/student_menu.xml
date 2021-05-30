@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/myCourses"
         android:title="@string/my_courses" />
@@ -10,9 +11,7 @@
         android:title="@string/logout"/>
     <item
         android:id="@+id/aboutus"
-        android:title="About us" />
-    <item
-        android:id="@+id/help"
-        android:title="Help" />
+        android:title="@string/about_us" />
+
 
 </menu>
