@@ -1,5 +1,6 @@
 package com.example.arielcast;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -48,7 +49,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_course,null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_course,null);
         return new MyHolder(view);
     }
 
@@ -58,7 +59,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
         holder.mImageView.findViewById(R.id.lecture_image);
 
        //  get uri from image link
-        Picasso.with(context).load(courses.get(position).getImage()).fit().into((ImageView)holder.mImageView);
+        Picasso.with(context).load(courses.get(position).getImage()).fit().into(holder.mImageView);
 
         // get lecturer name
         String lecId=courses.get(position).getLecturerId();
@@ -83,7 +84,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                         // if it's lecturer user - > don't show plus button
                         // and send email for all student tha follow this course
@@ -91,35 +92,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
                        holder.plusImage.setImageDrawable(d);
 
                        //open popUp window that show student that follow this course
-                       holder.plusImage.setOnClickListener(new View.OnClickListener() {
-                           @Override
-                           public void onClick(View v) {
+                       holder.plusImage.setOnClickListener(v -> {
 
-                               // show students list - followers in this course
-                               Intent intent=new Intent(context, StudentCoursesActivity.class);
-                               intent.putExtra("CourseId",courses.get(position).getCourseId());
-                               intent.putExtra("lecID",courses.get(position).getLecturerId());
-                               intent.putExtra("ID",userId);
-                               context.startActivity(intent);
-                           }
+                           // show students list - followers in this course
+                           Intent intent=new Intent(context, StudentCoursesActivity.class);
+                           intent.putExtra("CourseId",courses.get(position).getCourseId());
+                           intent.putExtra("lecID",courses.get(position).getLecturerId());
+                           intent.putExtra("ID",userId);
+                           context.startActivity(intent);
                        });
 
                        //send email to student that follow this course
-                       holder.emailImage.setOnClickListener(new View.OnClickListener() {
-                           @Override
-                           public void onClick(View v) {
-                               Intent intent=new Intent(context, MailActivity.class);
-                               intent.putExtra("CourseId",courses.get(position).getCourseId());
-                               intent.putExtra("lecID",courses.get(position).getLecturerId());
-                               intent.putExtra("ID",userId);
-                               intent.putExtra("userKind","lecturer");
-                               context.startActivity(intent);
-                           }
+                       holder.emailImage.setOnClickListener(v -> {
+                           Intent intent=new Intent(context, MailActivity.class);
+                           intent.putExtra("CourseId",courses.get(position).getCourseId());
+                           intent.putExtra("lecID",courses.get(position).getLecturerId());
+                           intent.putExtra("ID",userId);
+                           intent.putExtra("userKind","lecturer");
+                           context.startActivity(intent);
                        });
 
                 } else {
                     Query query = FirebaseDatabase.getInstance().getReference().child("Students").child(userId);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @SuppressLint("SetTextI18n")
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
@@ -128,16 +124,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
                                     // and student also can send email to lecturer's course .
 
                                     //send email to lecturer of this course
-                                    holder.emailImage.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            Intent intent=new Intent(context, MailActivity.class);
-                                            intent.putExtra("CourseId",courses.get(position).getCourseId());
-                                            intent.putExtra("lecID",courses.get(position).getLecturerId());
-                                            intent.putExtra("ID",userId);
-                                            intent.putExtra("userKind","student");
-                                            context.startActivity(intent);
-                                        }
+                                    holder.emailImage.setOnClickListener(v -> {
+                                        Intent intent=new Intent(context, MailActivity.class);
+                                        intent.putExtra("CourseId",courses.get(position).getCourseId());
+                                        intent.putExtra("lecID",courses.get(position).getLecturerId());
+                                        intent.putExtra("ID",userId);
+                                        intent.putExtra("userKind","student");
+                                        context.startActivity(intent);
                                     });
                                     holder.plusImage.setVisibility(View.VISIBLE);
 
@@ -147,50 +140,39 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
                                             StudentCourses user = new StudentCourses(userId, courses.get(position).getCourseId());
                                              DatabaseReference ref=FirebaseDatabase.getInstance().getReference("StudentCourses");
 
-                                             ref.addValueEventListener(new ValueEventListener() {
-                                                 @Override
-                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                     if (snapshot.child(SCId).exists()) {
-                                                         Drawable d = ContextCompat.getDrawable(context, R.drawable.tempsnip11);
-                                                         holder.plusImage.setImageDrawable(d);
-                                                         holder.plusImage.setOnClickListener(new View.OnClickListener() {
-                                                             @Override
-                                                             public void onClick(View v) {
-                                                                 Toast.makeText(context,
-                                                                         "this course removed from your list !",
-                                                                         Toast.LENGTH_LONG).show();
-                                                         ref.child(SCId).removeValue();
-                                                                 Drawable d = ContextCompat.getDrawable(context, android.R.drawable.ic_menu_add);
-                                                                 holder.plusImage.setImageDrawable(d);
-                                                     }
-                                                 });
-                                                     } else {
-                                                          holder.plusImage.setOnClickListener(new View.OnClickListener() {
-                                                         @Override
-                                                                   public void onClick(View v) {
-                                                                         ref.child(SCId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                             @Override
-                                                             public void onComplete(@NonNull Task<Void> task) {
-                                                                 if (task.isSuccessful()) {
-                                                                     Toast.makeText(context,
-                                                                             "this course added in your list !",
-                                                                             Toast.LENGTH_LONG).show();
+                                    ValueEventListener valueEventListener = ref.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.child(SCId).exists()) {
+                                                Drawable d = ContextCompat.getDrawable(context, android.R.drawable.ic_menu_delete);
+                                                holder.plusImage.setImageDrawable(d);
+                                                holder.plusImage.setOnClickListener(v -> {
+                                                    makeText(context,
+                                                            "this course removed from your list !",
+                                                            Toast.LENGTH_LONG).show();
+                                                    ref.child(SCId).removeValue();
+                                                    Drawable d1 = ContextCompat.getDrawable(context, android.R.drawable.ic_menu_add);
+                                                    holder.plusImage.setImageDrawable(d1);
+                                                });
+                                            } else {
+                                                holder.plusImage.setOnClickListener(v -> ref.child(SCId).setValue(user).addOnCompleteListener(task -> {
+                                                    if (task.isSuccessful()) {
+                                                        makeText(context,
+                                                                "this course added in your list !",
+                                                                Toast.LENGTH_LONG).show();
 
-                                                                     Drawable d = ContextCompat.getDrawable(context, R.drawable.tempsnip11);
-                                                                     holder.plusImage.setImageDrawable(d);
-                                                                 }
-                                                             }
-                                                         });
-                                                     }
-                                                 });
-                                                     }
-                                                 }
+                                                        Drawable d = ContextCompat.getDrawable(context, R.drawable.tempsnip11);
+                                                        holder.plusImage.setImageDrawable(d);
+                                                    }
+                                                }));
+                                            }
+                                        }
 
-                                                 @Override
-                                                 public void onCancelled(@NonNull DatabaseError error) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
-                                                 }
-                                             });
+                                        }
+                                    });
 
 
                                 }
@@ -217,15 +199,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
         });
 
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(context,ShowCourse.class);
-                intent.putExtra("CourseId",courses.get(position).getCourseId());
-                intent.putExtra("lecID",courses.get(position).getLecturerId());
-                intent.putExtra("ID",userId);
-                context.startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent=new Intent(context,ShowCourse.class);
+            intent.putExtra("CourseId",courses.get(position).getCourseId());
+            intent.putExtra("lecID",courses.get(position).getLecturerId());
+            intent.putExtra("ID",userId);
+            context.startActivity(intent);
         });
     }
 
