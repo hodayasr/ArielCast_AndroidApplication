@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -88,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
         if(v.getId() == R.id.setNewPassword) {
-            String email = editTextEmail.getText().toString().trim();
+             String email = editTextEmail.getText().toString().trim();
             if(email.isEmpty()) {
                 editTextEmail.setError("email is required!");
                 editTextEmail.requestFocus();
@@ -126,65 +127,62 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                        Query query = myRef.child("Lecturers").orderByChild("email").equalTo(email);
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                    Query query = myRef.child("Lecturers").orderByChild("email").equalTo(email);
 
-                        query.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
-                                    for(DataSnapshot data:snapshot.getChildren()) {
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putString("email",editTextEmail.getText().toString());
-                                        editor.putString("password",editTextPassword.getText().toString());
-                                        editor.putString("ID",data.child("lecturerId").getValue(String.class));
-                                        editor.apply();
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                       String value = data.child("lecturerId").getValue(String.class);
-                                        intent.putExtra("Email", email);
-                                        intent.putExtra("ID",value);
-                                        startActivity(intent);
-                                    }
-                                } else {
-                                    Query query = myRef.child("Students").orderByChild("email").equalTo(email);
-                                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()) {
-                                                for(DataSnapshot data:snapshot.getChildren()) {
-                                                    Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
-                                                    String value = data.getKey();
-                                                    intent.putExtra("Email", email);
-                                                    intent.putExtra("ID", value);
-                                                    startActivity(intent);
-                                                }
-                                            } else {
-                                                editTextEmail.setError("Please provide valid email");
-                                                editTextEmail.requestFocus();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-                                            throw error.toException(); // don't ignore errors
-                                        }
-                                    });
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for(DataSnapshot data:snapshot.getChildren()) {
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("email",editTextEmail.getText().toString());
+                                    editor.putString("password",editTextPassword.getText().toString());
+                                    editor.putString("ID",data.child("lecturerId").getValue(String.class));
+                                    editor.apply();
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                   String value = data.child("lecturerId").getValue(String.class);
+                                    intent.putExtra("Email", email);
+                                    intent.putExtra("ID",value);
+                                    startActivity(intent);
                                 }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                throw error.toException(); // don't ignore errors
-                            }
-                        });
+                            } else {
+                                Query query = myRef.child("Students").orderByChild("email").equalTo(email);
+                                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            for(DataSnapshot data:snapshot.getChildren()) {
+                                                Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
+                                                String value = data.getKey();
+                                                intent.putExtra("Email", email);
+                                                intent.putExtra("ID", value);
+                                                startActivity(intent);
+                                            }
+                                        } else {
+                                            editTextEmail.setError("Please provide valid email");
+                                            editTextEmail.requestFocus();
+                                        }
+                                    }
 
-                } else {
-                    Toast.makeText(LoginActivity.this,
-                            "Fail to login, please check your credentials",
-                            Toast.LENGTH_LONG).show();
-                }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        throw error.toException(); // don't ignore errors
+                                    }
+                                });
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            throw error.toException(); // don't ignore errors
+                        }
+                    });
+
+            } else {
+                Toast.makeText(LoginActivity.this,
+                        "Fail to login, please check your credentials",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -194,31 +192,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String emailAddress = editTextEmail.getText().toString();
 
-        if(editTextEmail==null) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Enter your email", Toast.LENGTH_SHORT);
-            ViewGroup group = (ViewGroup) toast.getView();
-            TextView messageTextView = (TextView) group.getChildAt(0);
-            messageTextView.setTextSize(24);
-            toast.show();
-        } else {
-            auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Email sent. Check Your Email", Toast.LENGTH_SHORT);
-                        ViewGroup group = (ViewGroup) toast.getView();
-                        TextView messageTextView = (TextView) group.getChildAt(0);
-                        messageTextView.setTextSize(24);
-                        toast.show();
-                    } else {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Email not sent. Check Your Email", Toast.LENGTH_SHORT);
-                        ViewGroup group = (ViewGroup) toast.getView();
-                        TextView messageTextView = (TextView) group.getChildAt(0);
-                        messageTextView.setTextSize(24);
-                        toast.show();
-                    }
+
+            auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast toast = Toast.makeText(LoginActivity.this, "Email sent. Check Your Email", Toast.LENGTH_LONG);
+                   // ViewGroup group = (ViewGroup) toast.getView();
+                   // TextView messageTextView = (TextView) group.getChildAt(0);
+                  //  messageTextView.setTextSize(24);
+                    toast.show();
+                } else {
+                    Toast toast = Toast.makeText(LoginActivity.this, "Email not sent. Check Your Email", Toast.LENGTH_LONG);
+                   // ViewGroup group = (ViewGroup) toast.getView();
+                   // TextView messageTextView = (TextView) group.getChildAt(0);
+                   // messageTextView.setTextSize(24);
+                    toast.show();
                 }
             });
-        }
+
     }
 }
