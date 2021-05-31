@@ -1,6 +1,7 @@
 package com.example.arielcast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -15,6 +16,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,6 +34,7 @@ import android.widget.VideoView;
 
 import com.example.arielcast.firebase.model.dataObject.Lecture;
 import com.example.arielcast.firebase.model.dataObject.WatchLaterLec;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +55,7 @@ public class ShowLecture extends AppCompatActivity {
     ImageButton button ,fullscreenbtn;
     Uri uri;
     CustomVideoView videoView;
+    int position;
     private RelativeLayout.LayoutParams defaultVideoViewParams;
     private int defaultScreenOrientationMode;
 
@@ -76,6 +82,10 @@ public class ShowLecture extends AppCompatActivity {
         videoView = findViewById(R.id.lecture_view);
         fullscreenbtn=findViewById(R.id.fullscreenbtn);
         Drawable fcd = ContextCompat.getDrawable(getApplicationContext(), R.drawable.fullscreenexit);
+
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         fullscreenbtn.setOnClickListener(v -> {
             fullscreenbtn.setBackground(fcd);
@@ -179,6 +189,7 @@ public class ShowLecture extends AppCompatActivity {
                     for(DataSnapshot data:snapshot.getChildren()) {
 
                         // if lecturer
+                        position=0; // lecturer !!
                         editButton.setVisibility(View.VISIBLE);
                         deleteButton.setVisibility(View.VISIBLE);
                         addToPlaylist.setVisibility(View.INVISIBLE);
@@ -217,6 +228,7 @@ public class ShowLecture extends AppCompatActivity {
                         });
                     }
                 } else {
+                    position=1; // lecturer !!
                     editButton.setVisibility(View.INVISIBLE);
                     deleteButton.setVisibility(View.INVISIBLE);
                     addToPlaylist.setVisibility(View.VISIBLE);
@@ -302,5 +314,38 @@ public class ShowLecture extends AppCompatActivity {
         mediaController.setAnchorView(videoView);
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(position==0) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.main_menu, menu);
+        }
+        else if(position==1)
+        {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.student_menu, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logout) {
+            logOut();
+            return true;
+        }
+        if (item.getItemId() == android.R.id.home)
+        {
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(ShowLecture.this, LoginActivity.class));
     }
 }

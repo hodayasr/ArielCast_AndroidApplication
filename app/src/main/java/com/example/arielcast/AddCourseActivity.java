@@ -30,6 +30,7 @@ import com.google.firebase.storage.UploadTask;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.UUID;
@@ -69,6 +70,11 @@ public class AddCourseActivity extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference().child("Images");
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Courses");
 
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
         // get lecturer's email from MainActivity
         Intent intent = getIntent();
          email = intent.getExtras().getString("Email");
@@ -92,6 +98,11 @@ public class AddCourseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.logout) {
             logOut();
+            return true;
+        }
+        if (item.getItemId() == android.R.id.home)
+        {
+            this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

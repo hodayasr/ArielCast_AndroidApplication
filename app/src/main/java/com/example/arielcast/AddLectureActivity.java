@@ -2,6 +2,7 @@ package com.example.arielcast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
@@ -87,6 +88,10 @@ public class AddLectureActivity extends AppCompatActivity{
         lecId=intent.getExtras().getString("ID");
         cId=intent.getExtras().getString("CourseId");
 
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         videoView = findViewById(R.id.videoview_main);
         addLec = findViewById(R.id.addLectureButton);
         progressBar = findViewById(R.id.progressBar);
@@ -121,6 +126,11 @@ public class AddLectureActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.logout) {
             logOut();
+            return true;
+        }
+        if (item.getItemId() == android.R.id.home)
+        {
+            this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -242,5 +252,7 @@ public class AddLectureActivity extends AppCompatActivity{
             Toast.makeText(this,"All Fields are required",Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 }

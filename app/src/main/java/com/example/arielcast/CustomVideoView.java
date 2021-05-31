@@ -31,7 +31,7 @@ public class CustomVideoView extends VideoView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if(measuredWidth>1450)
          setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);

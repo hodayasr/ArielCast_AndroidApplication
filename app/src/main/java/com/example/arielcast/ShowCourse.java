@@ -2,6 +2,7 @@ package com.example.arielcast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -84,6 +85,11 @@ public class ShowCourse extends AppCompatActivity {
         fab=findViewById(R.id.floatingActionButton);
         tv3=findViewById(R.id.textView3);
         ref = FirebaseDatabase.getInstance().getReference().child("Courses");
+
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         lecturesListView = findViewById(R.id.watch_later_recycleView);
         lecturesListView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -332,6 +338,11 @@ public class ShowCourse extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.logout) {
             logOut();
+            return true;
+        }
+        if (item.getItemId() == android.R.id.home)
+        {
+            this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
