@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MailActivity extends AppCompatActivity {
 
@@ -65,7 +66,6 @@ public class MailActivity extends AppCompatActivity {
         title=findViewById(R.id.editTextTextPersonName);
         content=findViewById(R.id.textInputEditText);
         imageButton=findViewById(R.id.imageButton);
-      //  backButton=findViewById(R.id.imageButton2);
 
         Intent intent = getIntent();
         cId=intent.getExtras().getString("CourseId");
@@ -74,34 +74,28 @@ public class MailActivity extends AppCompatActivity {
         userKind=intent.getExtras().getString("userKind");
 
 
-       /* backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(userKind.equals("student"))
-                {
-                    Intent intent = new Intent(MailActivity.this, StudentActivity.class);
-                    intent.putExtra("ID", userId);
-                    startActivity(intent);
-                }
-                else if(userKind.equals("lecturer"))
-                {
-                    Intent intent = new Intent(MailActivity.this, MainActivity.class);
-                    intent.putExtra("ID",userId);
-                    startActivity(intent);
-                }
-            }
-        });*/
-
         imageButton.setOnClickListener(v -> {
-            if(userKind.equals("student"))
-            {
+
+            String et = title.getText().toString().trim();
+            String ec = content.getText().toString().trim();
+
+            //check that title and body text isn't empty
+            if (et.isEmpty()) {
+                title.setError("Email title is required!");
+                title.requestFocus();
+            } else if (ec.isEmpty()) {
+                content.setError("Email body is required!");
+                content.requestFocus();
+            }
+            else {
+            if (userKind.equals("student")) {
                 // get lecturer email by lecId
                 Query query = FirebaseDatabase.getInstance().getReference().child("Lecturers").child(lecturerId);
 
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            String email = snapshot.child("email").getValue(String.class);
+                        String email = snapshot.child("email").getValue(String.class);
 
                         try {
                             GMailSender sender = new GMailSender("castariel01@gmail.com", "cast123456");
@@ -110,18 +104,28 @@ public class MailActivity extends AppCompatActivity {
                                     "castariel01@gmail.com",
                                     email);
 
-                            Toast.makeText(MailActivity.this,
-                                    "email sent !",
-                                    Toast.LENGTH_LONG).show();
-                            /*
-                            Intent in = new Intent(MailActivity.this, StudentActivity.class);
-                            in.putExtra(userId,"ID");
-                            in.putExtra(userKind,"userKind");
-                            startActivity(in);
 
-                             */
+                            Toast.makeText(getApplicationContext(), "email sent !", Toast.LENGTH_LONG).show();
 
-                            finish();
+                            final Intent in = new Intent(getApplicationContext(), StudentActivity.class);
+                            in.putExtra("userKind","student");
+                            in.putExtra("ID",userId);
+                            in.putExtra("Email", "");
+
+                            Thread thread = new Thread(){
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(3500); // As I am using LENGTH_LONG in Toast
+                                        startActivity(in);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+
+                            thread.start();
+
                         } catch (Exception e) {
                             Toast.makeText(MailActivity.this,
                                     "email not sent !",
@@ -130,14 +134,12 @@ public class MailActivity extends AppCompatActivity {
 
                     }
 
-                        @Override
-                        public void onCancelled (@NonNull DatabaseError error){
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-            });
-            }
-            else if(userKind.equals("lecturer"))
-            {
+                    }
+                });
+            } else if (userKind.equals("lecturer")) {
                 // get list of followers (students) of this course
                 // and find their email - send massage all followers
 
@@ -154,14 +156,13 @@ public class MailActivity extends AppCompatActivity {
                         quS.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for(DataSnapshot data:snapshot.getChildren())
-                                {
-                                    String studenti=data.child("studentId").getValue(String.class);
-                                    Query qs=FirebaseDatabase.getInstance().getReference().child("Students").child(studenti);
+                                for (DataSnapshot data : snapshot.getChildren()) {
+                                    String studenti = data.child("studentId").getValue(String.class);
+                                    Query qs = FirebaseDatabase.getInstance().getReference().child("Students").child(studenti);
                                     qs.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            String stuemail=snapshot.child("email").getValue(String.class);
+                                            String stuemail = snapshot.child("email").getValue(String.class);
                                             try {
                                                 GMailSender sender = new GMailSender("castariel01@gmail.com", "cast@1234567");
                                                 sender.sendMail(title.getText().toString().trim(),
@@ -169,17 +170,27 @@ public class MailActivity extends AppCompatActivity {
                                                         "castariel01@gmail.com",
                                                         stuemail);
 
-                                                Toast.makeText(MailActivity.this,
-                                                        "email sent !",
-                                                        Toast.LENGTH_LONG).show();
 
-                                              /*  Intent in = new Intent(MailActivity.this, MainActivity.class);
-                                                in.putExtra(lecturerId,"ID");
-                                                in.putExtra(userKind,"userKind");
-                                                startActivity(in);
+                                                Toast.makeText(getApplicationContext(), "email sent !", Toast.LENGTH_LONG).show();
 
-                                               */
-                                                finish();
+                                                final Intent in = new Intent(getApplicationContext(), MainActivity.class);
+                                                in.putExtra("userKind","lecturer");
+                                                in.putExtra("ID",userId);
+                                                in.putExtra("Email","");
+
+                                                Thread thread = new Thread(){
+                                                    @Override
+                                                    public void run() {
+                                                        try {
+                                                            Thread.sleep(3500); // As I am using LENGTH_LONG in Toast
+                                                            startActivity(in);
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                };
+
+                                                thread.start();
                                             } catch (Exception e) {
                                                 Toast.makeText(MailActivity.this,
                                                         "email not sent !",
@@ -205,12 +216,13 @@ public class MailActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onCancelled (@NonNull DatabaseError error){
+                    public void onCancelled(@NonNull DatabaseError error) {
 
                     }
                 });
 
             }
+        }
         });
 
 
