@@ -4,23 +4,31 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.arielcast.firebase.model.dataObject.Lecture;
 import com.example.arielcast.firebase.model.dataObject.WatchLaterLec;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,13 +47,25 @@ public class ShowLecture extends AppCompatActivity {
     FirebaseDatabase database;
     String lecturername;
     Dialog myDialog;
-    ImageButton button;
+    ImageButton button ,fullscreenbtn;
     Uri uri;
+    CustomVideoView videoView;
+    private RelativeLayout.LayoutParams defaultVideoViewParams;
+    private int defaultScreenOrientationMode;
 
+
+
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_lecture);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+           // requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        }
 
         lecture_name = findViewById(R.id.et_video_name);
         lecNameText=findViewById(R.id.textViewSub_lecName);
@@ -53,6 +73,53 @@ public class ShowLecture extends AppCompatActivity {
         editButton=findViewById(R.id.editButton5);
         deleteButton=findViewById(R.id.deleteButton);
         addToPlaylist=findViewById(R.id.add_to_watch_later_list);
+        videoView = findViewById(R.id.lecture_view);
+        fullscreenbtn=findViewById(R.id.fullscreenbtn);
+        Drawable fcd = ContextCompat.getDrawable(getApplicationContext(), R.drawable.fullscreenexit);
+
+        fullscreenbtn.setOnClickListener(v -> {
+            fullscreenbtn.setBackground(fcd);
+          /*  getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            android.widget.RelativeLayout.LayoutParams params = new android.widget.RelativeLayout.LayoutParams(
+                    android.widget.RelativeLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.RelativeLayout.LayoutParams.MATCH_PARENT);
+
+            videoView.setNewDimension(metrics.widthPixels, metrics.heightPixels);
+           videoView.getHolder().setFixedSize(metrics.heightPixels,metrics.widthPixels);
+
+            videoView.setLayoutParams(params);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            fullscreenbtn.setBackground(fcd);*/
+
+
+
+             defaultScreenOrientationMode = getResources().getConfiguration().orientation;
+            defaultVideoViewParams = (RelativeLayout.LayoutParams) videoView.getLayoutParams();
+
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+            videoView.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.MATCH_PARENT);
+
+                    videoView.setLayoutParams(params);
+                    videoView.layout(10, 10, 10, 10);
+
+                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                }
+            }, 700);
+
+        });
 
         lectureID = getIntent().getExtras().getString("lecID");
         String id =getIntent().getExtras().getString("ID");
@@ -163,7 +230,7 @@ public class ShowLecture extends AppCompatActivity {
 
         dataRef = FirebaseDatabase.getInstance().getReference().child("Lectures").child(lectureID);
 
-        VideoView videoView = findViewById(R.id.lecture_view);
+
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -172,8 +239,10 @@ public class ShowLecture extends AppCompatActivity {
                     uri = Uri.parse(videoPath);
                     videoView.setVideoURI(uri);
                     videoView.requestFocus();
-                    videoView.start();
 
+                    //MediaController mc=new MediaController(getApplicationContext());
+
+                    videoView.start();
 
                     String date = snapshot.child("date").getValue(String.class);
                     dateText.setText(snapshot.child("date").getValue(String.class));

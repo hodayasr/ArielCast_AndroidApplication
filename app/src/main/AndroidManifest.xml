@@ -11,6 +11,7 @@
         android:label="ArielCast"
         android:roundIcon="@mipmap/ic_launcher"
         android:theme="@style/Theme.ArielCast"
+        android:configChanges="orientation|screenSize|keyboardHidden"
         tools:ignore="AllowBackup,MissingClass">
         <activity
             android:name=".PhonebookActivity"
