@@ -161,7 +161,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
                                                                 "this course added in your list !",
                                                                 Toast.LENGTH_LONG).show();
 
-                                                        Drawable d = ContextCompat.getDrawable(context, R.drawable.tempsnip11);
+                                                        Drawable d = ContextCompat.getDrawable(context, android.R.drawable.ic_menu_delete);
                                                         holder.plusImage.setImageDrawable(d);
                                                     }
                                                 }));
