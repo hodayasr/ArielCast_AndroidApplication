@@ -47,7 +47,7 @@ public class ShowLecture extends AppCompatActivity {
     String videoPath;
     TextView lecture_name;
     ImageButton editButton,deleteButton , addToPlaylist;
-    TextView lecNameText , dateText;
+    TextView lecNameText , dateText ,commentstitle;
     DatabaseReference dataRef;
     FirebaseDatabase database;
     String lecturername;
@@ -76,6 +76,8 @@ public class ShowLecture extends AppCompatActivity {
         lecture_name = findViewById(R.id.et_video_name);
         lecNameText=findViewById(R.id.textViewSub_lecName);
         dateText=findViewById(R.id.textViewSub_date);
+        commentstitle=findViewById(R.id.titleComments);
+        commentstitle.setText("Comments \t\t\t | \t\t\t 0");
         editButton=findViewById(R.id.editButton5);
         deleteButton=findViewById(R.id.deleteButton);
         addToPlaylist=findViewById(R.id.add_to_watch_later_list);

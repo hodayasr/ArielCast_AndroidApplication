@@ -61,5 +61,6 @@
     <string name="arielcast_update_di">ArielCast</string>
     <string name="todo">TODO</string>
     <string name="about_us">About us</string>
+    <string name="comments">Comments \t\t\t | \t\t\t 0 </string>
 
 </resources>

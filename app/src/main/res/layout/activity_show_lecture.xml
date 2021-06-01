@@ -14,16 +14,19 @@
         android:id="@+id/rlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center|top"
+        android:layout_marginTop="0dp"
+        android:gravity="center|top">
 
         <com.example.arielcast.CustomVideoView
             android:id="@+id/lecture_view"
             android:layout_width="wrap_content"
             android:layout_height="250dp"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="0dp"
             android:layout_marginBottom="5dp"
             android:backgroundTint="@android:color/black"
-            android:textAlignment="center"
-            android:layout_centerInParent="true"/>
+            android:textAlignment="center" />
 
         <ImageButton
             android:id="@+id/fullscreenbtn"
@@ -80,7 +83,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:autofillHints="@string/arielcast"
+        android:autofillHints=""
         android:backgroundTint="@color/design_default_color_background"
         android:hint="@string/lecture_name"
         android:textColor="@android:color/black"
@@ -105,6 +108,46 @@
         android:textColor="#a9a9a9"
         android:textSize="15sp"
         android:textStyle="bold" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:textColor="#303F9F"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="@string/comments" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="112dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:hint="Add a comment ..." />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp" />
+    </LinearLayout>
 
 
 </LinearLayout>
