@@ -34,6 +34,7 @@ import android.widget.VideoView;
 
 import com.example.arielcast.firebase.model.dataObject.Lecture;
 import com.example.arielcast.firebase.model.dataObject.WatchLaterLec;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,6 +60,8 @@ public class ShowLecture extends AppCompatActivity {
     private RelativeLayout.LayoutParams defaultVideoViewParams;
     private int defaultScreenOrientationMode;
 
+    TextInputEditText commentbody ;
+    ImageButton sendcomment;
 
 
     @SuppressLint("WrongViewCast")
@@ -73,11 +76,25 @@ public class ShowLecture extends AppCompatActivity {
 
         }
 
+        //comments
+        commentstitle=findViewById(R.id.titleComments);
+        commentstitle.setText("Comments \t\t\t | \t\t\t 0");
+        commentbody=findViewById(R.id.commentbody);
+        sendcomment=findViewById(R.id.sendcomment);
+       /* if(commentbody.getText().toString().isEmpty())
+            sendcomment.setClickable(false);
+        else
+            sendcomment.setClickable(true);
+
+        sendcomment.setOnClickListener(v -> {
+            if(sendcomment.isClickable()) {
+                commentbody.setText("it's works");
+            }
+        }); */
+
         lecture_name = findViewById(R.id.et_video_name);
         lecNameText=findViewById(R.id.textViewSub_lecName);
         dateText=findViewById(R.id.textViewSub_date);
-        commentstitle=findViewById(R.id.titleComments);
-        commentstitle.setText("Comments \t\t\t | \t\t\t 0");
         editButton=findViewById(R.id.editButton5);
         deleteButton=findViewById(R.id.deleteButton);
         addToPlaylist=findViewById(R.id.add_to_watch_later_list);
@@ -91,24 +108,6 @@ public class ShowLecture extends AppCompatActivity {
 
         fullscreenbtn.setOnClickListener(v -> {
             fullscreenbtn.setBackground(fcd);
-          /*  getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            DisplayMetrics metrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            android.widget.RelativeLayout.LayoutParams params = new android.widget.RelativeLayout.LayoutParams(
-                    android.widget.RelativeLayout.LayoutParams.MATCH_PARENT,
-                    android.widget.RelativeLayout.LayoutParams.MATCH_PARENT);
-
-            videoView.setNewDimension(metrics.widthPixels, metrics.heightPixels);
-           videoView.getHolder().setFixedSize(metrics.heightPixels,metrics.widthPixels);
-
-            videoView.setLayoutParams(params);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            fullscreenbtn.setBackground(fcd);*/
-
-
 
              defaultScreenOrientationMode = getResources().getConfiguration().orientation;
             defaultVideoViewParams = (RelativeLayout.LayoutParams) videoView.getLayoutParams();

@@ -135,11 +135,20 @@
             android:layout_height="112dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/commentbody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:hint="Add a comment ..." />
+
+            <ImageButton
+                android:id="@+id/sendcomment"
+                android:layout_width="51dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="350dp"
+                android:background="@android:drawable/ic_menu_send"
+                android:clickable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.recyclerview.widget.RecyclerView
