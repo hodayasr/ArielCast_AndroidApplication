@@ -109,6 +109,10 @@ public class StudentCoursesList extends AppCompatActivity {
             intent.putExtra("Email",email);
             startActivity(intent);
         }
+        if(item.getItemId()==R.id.aboutus)
+        {
+            startActivity(new Intent(this, AboutUsActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 

@@ -28,8 +28,6 @@ import com.example.arielcast.firebase.model.dataObject.Course;
 import com.example.arielcast.firebase.model.dataObject.Lecture;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -166,7 +164,7 @@ public class ShowCourse extends AppCompatActivity {
                 myDialog = new Dialog(ShowCourse.this);
                 myDialog.setContentView(R.layout.edit_course_dialog);
                 myDialog.setTitle("Edit this course ");
-                EditText course_name = myDialog.findViewById(R.id.insertNewCourseName);
+                EditText course_name = myDialog.findViewById(R.id.insertNewLectureName);
                 course_name.setText(courseName);
                 EditText courseStart = myDialog.findViewById(R.id.editTextStartDate);
                 courseStart.setText(start);
@@ -175,7 +173,7 @@ public class ShowCourse extends AppCompatActivity {
                 courseEnd.setText(end);
                 courseImage = myDialog.findViewById(R.id.imageView3);
                 Picasso.with(getApplicationContext()).load(imageurl).fit().into(courseImage);
-                Button changeImage = myDialog.findViewById(R.id.updateCourseImage);
+                Button changeImage = myDialog.findViewById(R.id.updateLectureVideo);
                 changeImage.setOnClickListener(v13 -> {
                     Intent intent = new Intent();
                     intent.setType("image/*");
@@ -345,6 +343,12 @@ public class ShowCourse extends AppCompatActivity {
             this.finish();
             return true;
         }
+
+        if(item.getItemId()==R.id.aboutus)
+        {
+            startActivity(new Intent(this, AboutUsActivity.class));
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

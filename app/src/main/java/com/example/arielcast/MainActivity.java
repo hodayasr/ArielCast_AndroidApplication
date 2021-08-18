@@ -114,6 +114,12 @@ public class MainActivity extends AppCompatActivity {
             logOut();
             return true;
         }
+
+        if(item.getItemId()==R.id.aboutus)
+        {
+            startActivity(new Intent(this, AboutUsActivity.class));
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

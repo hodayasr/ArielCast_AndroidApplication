@@ -1,8 +1,11 @@
 package com.example.arielcast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
@@ -15,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,8 +36,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.arielcast.firebase.model.dataObject.Course;
 import com.example.arielcast.firebase.model.dataObject.Lecture;
 import com.example.arielcast.firebase.model.dataObject.WatchLaterLec;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -42,26 +50,40 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+import static java.lang.System.currentTimeMillis;
 
 public class ShowLecture extends AppCompatActivity {
+    private static final int PICK_VIDEO = 1;
     String lectureID;
-    String videoPath;
+    String videoPath ,videoPathD;
     TextView lecture_name;
     ImageButton editButton,deleteButton , addToPlaylist;
     TextView lecNameText , dateText ,commentstitle;
-    DatabaseReference dataRef;
+    DatabaseReference dataRef ,dataRefD;
     FirebaseDatabase database;
     String lecturername;
     Dialog myDialog;
     ImageButton button ,fullscreenbtn;
-    Uri uri;
+    Uri uri ,uriD;
     CustomVideoView videoView;
+
+    VideoView videoView2; // edit dialod VideoView
     int position;
     private RelativeLayout.LayoutParams defaultVideoViewParams;
     private int defaultScreenOrientationMode;
 
     TextInputEditText commentbody ;
     ImageButton sendcomment;
+
+    Uri videoUri;
 
 
     @SuppressLint("WrongViewCast")
@@ -227,9 +249,63 @@ public class ShowLecture extends AppCompatActivity {
                                 });
                             }
                         });
+
+                        editButton.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                myDialog =new Dialog(ShowLecture.this);
+                                myDialog.setContentView(R.layout.edit_lecture_dialog);
+                                myDialog.setTitle("Edit lecture ");
+                                myDialog.show();
+                                VideoView videoDialog=(VideoView)myDialog.findViewById(R.id.videoView2);
+                                dataRefD = FirebaseDatabase.getInstance().getReference().child("Lectures").child(lectureID);
+
+
+                                dataRefD.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(snapshot.exists()) {
+                                            videoPathD = snapshot.child("video_url").getValue(String.class);
+                                            uriD = Uri.parse(videoPath);
+                                            videoDialog.setVideoURI(uri);
+                                            videoDialog.requestFocus();
+                                            videoDialog.start();
+
+                                        }}
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                                EditText lecturenameEdit=myDialog.findViewById(R.id.insertNewLectureName);
+                                lecturenameEdit.setHint(lecture_name.getText());
+                                Button updatebtn=myDialog.findViewById(R.id.updateLectureVideo);
+                                updatebtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        videoView2=myDialog.findViewById(R.id.videoView2);
+                                        // choose video
+                                        Intent intent = new Intent();
+                                        intent.setType("video/*, audio/*");
+                                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                                        startActivityForResult(intent,PICK_VIDEO);
+                                    }
+                                });
+
+                                Button cb=(Button)myDialog.findViewById(R.id.cb) ;
+                                cb.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        myDialog.cancel();
+                                    }
+                                });
+                            }
+                        });
                     }
                 } else {
-                    position=1; // lecturer !!
+                    position=1; // student !!
                     editButton.setVisibility(View.INVISIBLE);
                     deleteButton.setVisibility(View.INVISIBLE);
                     addToPlaylist.setVisibility(View.VISIBLE);
@@ -342,6 +418,11 @@ public class ShowLecture extends AppCompatActivity {
             this.finish();
             return true;
         }
+
+        if(item.getItemId()==R.id.aboutus)
+        {
+            startActivity(new Intent(this, AboutUsActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -349,4 +430,103 @@ public class ShowLecture extends AppCompatActivity {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(ShowLecture.this, LoginActivity.class));
     }
+
+    /*private void UploadVideo(){
+        String videoName = editText.getText().toString();
+        String search = editText.getText().toString().toLowerCase();
+        if (uri != null ) {
+            if(!TextUtils.isEmpty(videoName)) {
+                progressBar.setVisibility(View.VISIBLE);
+                final StorageReference myRef = storageReference.child(currentTimeMillis() + "." + getExt(videoUri));
+                uploadTask = myRef.putFile(videoUri);
+
+                Task<Uri> taskurl = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+                        return myRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+
+                            progressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(AddLectureActivity.this, "Data saved!",
+                                    Toast.LENGTH_LONG).show();
+
+
+                            // get Email ( from Extras) from LecturerActivity
+
+                            lecture.setLectureName(videoName);
+                            lecture.setLecturerId(lecId);
+                            lecture.setCourseId(cId);
+                            lecture.setVideo_url(downloadUri.toString());
+                            lecture.setSearch(search);
+
+                            Date presentTime_Date = Calendar.getInstance().getTime();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                            String date= dateFormat.format(presentTime_Date);
+
+                            lecture.setDate(date);
+                            //    lecture.setLecturerEmail(lecturerEmail); // id
+                            databaseReference.child(videoName).setValue(lecture);
+                            Intent i=new Intent(AddLectureActivity.this, ShowCourse.class);
+                            i.putExtra("Email",lecturerEmail);
+                            i.putExtra("ID",lecId);
+                            i.putExtra("lecID",cId);
+                            i.putExtra("CourseId",cId);
+                            startActivity(i);
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(AddLectureActivity.this, "My Notification");
+                            builder.setSmallIcon(R.drawable.ic_baseline_chat_24);
+                            builder.setContentTitle("new lecture was upload");
+                            Query coursequery = FirebaseDatabase.getInstance().getReference().child("Courses").child("").orderByChild("courseId").equalTo(lecture.getCourseId());
+                            coursequery.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot data : snapshot.getChildren()) {
+                                        Course c = data.getValue(Course.class);
+                                        coursename=c.getCourseName();
+                                        builder.setContentText("A New lecture " + lecture.getLectureName() + " was upload to the course " + coursename);
+                                        builder.setAutoCancel(true);
+
+                                        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(AddLectureActivity.this);
+                                        managerCompat.notify(1, builder.build());
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }});
+
+                        } else {
+                            Toast.makeText(ShowLecture.this, "Failed",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }
+    }*/
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_VIDEO || requestCode == RESULT_OK ||
+                data != null || data.getData() != null) {
+            videoUri = data.getData();
+            videoView2.setVideoURI(videoUri);
+            videoView2.requestFocus();
+            videoView2.start();
+        }
+    }
+
 }

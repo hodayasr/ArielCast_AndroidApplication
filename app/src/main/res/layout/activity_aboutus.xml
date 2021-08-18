@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/capture"
+    android:orientation="vertical"
+    app:layoutDescription="@xml/activity_aboutus_scene"
+    tools:context=".AboutUsActivity">
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="318dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:text="ArielCast is application for easy access to all classes and lecture’s recordings where students can follow, watch, comment on, download and interact with their lecturers.\n\nThe purpose of the 'Ariel Cast' application is to make the university's courses accessible also on a mobile device"
+        android:textColor="#1B287C"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:layout_weight="1"
+        android:text="•	The ArielCast app centralizes and makes it accessible for students to download and watch lectures in a convenient and easy way.
+"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_margin="15dp"
+        android:layout_weight="1"
+        android:text="•	The app also helps lecturers upload their lectures in an orderly and easy manner."
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:layout_margin="15dp"
+        android:layout_weight="1"
+        android:text="•	easy access to send messages to students in their courses."
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:layout_weight="1"
+        android:text="" />
+</LinearLayout>

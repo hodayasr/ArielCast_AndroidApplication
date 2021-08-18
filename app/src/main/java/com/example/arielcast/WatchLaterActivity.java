@@ -73,6 +73,11 @@ public class WatchLaterActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if(item.getItemId()==R.id.aboutus)
+        {
+            startActivity(new Intent(this, AboutUsActivity.class));
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

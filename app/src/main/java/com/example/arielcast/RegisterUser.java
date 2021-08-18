@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.arielcast.firebase.model.dataObject.Lecturer;
@@ -69,6 +70,11 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
         if (item.getItemId() == R.id.logout) {
             //logOut();
             return true;
+        }
+
+        if(item.getItemId()==R.id.aboutus)
+        {
+            startActivity(new Intent(this, AboutUsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -131,6 +137,10 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
         String fullName = editTextFullName.getText().toString().trim();
         String phone = editTextPhone.getText().toString().trim();
 
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         if (fullName.isEmpty()) {
             editTextFullName.setError("Full name is required!");
             editTextFullName.requestFocus();
@@ -183,7 +193,7 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
                             // ADD STUDENT TO DATABASE
                             //FirebaseDBStudents st=new FirebaseDBStudents();
                             String sId=Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-                            Student user = new Student(sId,email, fullName, phone, password);
+                            Student user = new Student(sId,email, capitalize(fullName), phone, password);
                             // st.addStudentToDB(user);
 
                             FirebaseDatabase.getInstance().getReference("Students")
@@ -279,7 +289,8 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
                         if (task.isSuccessful()) {
                             // ADD STUDENT TO DATABASE
                             String LecId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-                            Lecturer user = new Lecturer(LecId, email, password, fullName, phone);
+
+                            Lecturer user = new Lecturer(LecId, email, password, capitalize(fullName), phone);
 
                             FirebaseDatabase.getInstance().getReference("Lecturers").child(LecId)
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -313,5 +324,27 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 });
+    }
+
+
+    public static String capitalize(String s) {
+        if ((s == null) || (s.trim().length() == 0)) {
+            return s;
+        }
+        s = s.toLowerCase();
+        char[] cArr = s.trim().toCharArray();
+        cArr[0] = Character.toUpperCase(cArr[0]);
+        for (int i = 0; i < cArr.length; i++) {
+            if (cArr[i] == ' ' && (i + 1) < cArr.length) {
+                cArr[i + 1] = Character.toUpperCase(cArr[i + 1]);
+            }
+            if (cArr[i] == '-' && (i + 1) < cArr.length) {
+                cArr[i + 1] = Character.toUpperCase(cArr[i + 1]);
+            }
+            if (cArr[i] == '\'' && (i + 1) < cArr.length) {
+                cArr[i + 1] = Character.toUpperCase(cArr[i + 1]);
+            }
+        }
+        return new String(cArr);
     }
 }

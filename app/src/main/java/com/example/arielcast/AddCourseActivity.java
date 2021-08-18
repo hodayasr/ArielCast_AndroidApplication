@@ -105,6 +105,10 @@ public class AddCourseActivity extends AppCompatActivity {
             this.finish();
             return true;
         }
+        if(item.getItemId()==R.id.aboutus)
+        {
+            startActivity(new Intent(this, AboutUsActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 
