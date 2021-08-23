@@ -177,11 +177,34 @@ public class ShowLecture extends AppCompatActivity {
         commentAdapter.notifyDataSetChanged();
 
 
+        // count comments for this lecture
+        Query coQu = FirebaseDatabase.getInstance().getReference().child("Comments").child("")
+                .orderByChild("lectureId").equalTo(lectureID);
+
+        coQu.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int i=0;
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    i++;
+                }
+                commentstitle.setText("Comments \t\t\t | \t\t\t "+i);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
         sendcomment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!commentbody.getText().toString().isEmpty())
                 {
+
                     DatabaseReference dbref=FirebaseDatabase.getInstance().getReference().child("Comments");
                     Comment newcomment=new Comment();
 
@@ -197,36 +220,55 @@ public class ShowLecture extends AppCompatActivity {
 
                     //get full name - checks if user id in lectures or students list and get full name
                     Query q=FirebaseDatabase.getInstance().getReference().child("Lecturers")
-                            .child("").orderByChild("lecturerId").equalTo(id);
+                            .child(id);
 
                     q.addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                     if(snapshot.exists())
                                                     {
-                                                        String fn=snapshot.child("fullname").getValue(String.class);
-                                                        newcomment.setFullName(fn);
+                                                        String fn = snapshot.child("fullname").getValue(String.class);
+                                                            newcomment.setFullName(fn);
+
+                                                        newcomment.setLectureId(lectureID);
+                                                        String commentID=UUID.randomUUID().toString();
+                                                        newcomment.setCommentId(commentID);
+
+                                                        dbref.child(commentID).setValue(newcomment);
+                                                        commentAdapter.notifyDataSetChanged();
+
+                                                        commentbody.setText("");
 
                                                     }
+                                                    else {
 
-                                                    Query q2=FirebaseDatabase.getInstance().getReference().child("Students")
-                                                            .child(id);
+                                                        Query q2 = FirebaseDatabase.getInstance().getReference().child("Students")
+                                                                .child(id);
 
-                                                    q2.addValueEventListener(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            if(snapshot.exists())
-                                                            {
-                                                                String fn=snapshot.child("fullname").getValue(String.class);
-                                                                newcomment.setFullName(fn);
+                                                        q2.addValueEventListener(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                if (snapshot.exists()) {
+                                                                    String fn = snapshot.child("fullname").getValue(String.class);
+                                                                    newcomment.setFullName(fn);
+
+                                                                    newcomment.setLectureId(lectureID);
+                                                                    String commentID=UUID.randomUUID().toString();
+                                                                    newcomment.setCommentId(commentID);
+
+                                                                    dbref.child(commentID).setValue(newcomment);
+                                                                    commentAdapter.notifyDataSetChanged();
+
+                                                                    commentbody.setText("");
+                                                                }
                                                             }
-                                                        }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                                        }
-                                                    });
+                                                            }
+                                                        });
+                                                    }
                                                 }
 
                                                 @Override
@@ -235,14 +277,6 @@ public class ShowLecture extends AppCompatActivity {
                                                 }
                                             });
 
-                    newcomment.setLectureId(lectureID);
-                    String commentID=UUID.randomUUID().toString();
-                    newcomment.setCommentId(commentID);
-
-                    dbref.child(commentID).setValue(newcomment);
-                    commentAdapter.notifyDataSetChanged();
-
-                    commentbody.setText("");
                 }
             }
         });
@@ -617,90 +651,6 @@ public class ShowLecture extends AppCompatActivity {
         startActivity(new Intent(ShowLecture.this, LoginActivity.class));
     }
 
-    /*private void UploadVideo(){
-        String videoName = editText.getText().toString();
-        String search = editText.getText().toString().toLowerCase();
-        if (uri != null ) {
-            if(!TextUtils.isEmpty(videoName)) {
-                progressBar.setVisibility(View.VISIBLE);
-                final StorageReference myRef = storageReference.child(currentTimeMillis() + "." + getExt(videoUri));
-                uploadTask = myRef.putFile(videoUri);
-
-                Task<Uri> taskurl = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
-                        return myRef.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri downloadUri = task.getResult();
-
-                            progressBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(AddLectureActivity.this, "Data saved!",
-                                    Toast.LENGTH_LONG).show();
-
-
-                            // get Email ( from Extras) from LecturerActivity
-
-                            lecture.setLectureName(videoName);
-                            lecture.setLecturerId(lecId);
-                            lecture.setCourseId(cId);
-                            lecture.setVideo_url(downloadUri.toString());
-                            lecture.setSearch(search);
-
-                            Date presentTime_Date = Calendar.getInstance().getTime();
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-                            String date= dateFormat.format(presentTime_Date);
-
-                            lecture.setDate(date);
-                            //    lecture.setLecturerEmail(lecturerEmail); // id
-                            databaseReference.child(videoName).setValue(lecture);
-                            Intent i=new Intent(AddLectureActivity.this, ShowCourse.class);
-                            i.putExtra("Email",lecturerEmail);
-                            i.putExtra("ID",lecId);
-                            i.putExtra("lecID",cId);
-                            i.putExtra("CourseId",cId);
-                            startActivity(i);
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(AddLectureActivity.this, "My Notification");
-                            builder.setSmallIcon(R.drawable.ic_baseline_chat_24);
-                            builder.setContentTitle("new lecture was upload");
-                            Query coursequery = FirebaseDatabase.getInstance().getReference().child("Courses").child("").orderByChild("courseId").equalTo(lecture.getCourseId());
-                            coursequery.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot data : snapshot.getChildren()) {
-                                        Course c = data.getValue(Course.class);
-                                        coursename=c.getCourseName();
-                                        builder.setContentText("A New lecture " + lecture.getLectureName() + " was upload to the course " + coursename);
-                                        builder.setAutoCancel(true);
-
-                                        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(AddLectureActivity.this);
-                                        managerCompat.notify(1, builder.build());
-                                    }
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }});
-
-                        } else {
-                            Toast.makeText(ShowLecture.this, "Failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        }
-    }*/
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -737,7 +687,6 @@ public class ShowLecture extends AppCompatActivity {
                     Comment c = data.getValue(Comment.class);
                     comments.add(c);
                     commentAdapter.notifyDataSetChanged();
-
                 }
 
             }
@@ -747,8 +696,6 @@ public class ShowLecture extends AppCompatActivity {
 
             }
         });
-
-        commentstitle.setText("Comments \t\t\t | \t\t\t "+comments.size());
 
         return comments;
     }
