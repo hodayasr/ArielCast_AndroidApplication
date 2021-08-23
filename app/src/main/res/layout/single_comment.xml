@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,8 +15,8 @@
 
         <TextView
             android:id="@+id/textViewMain"
-            android:layout_width="210dp"
-            android:layout_height="wrap_content"
+            android:layout_width="328dp"
+            android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:text="@string/main_title"
             android:textColor="#000"
@@ -29,7 +30,7 @@
 
             <TextView
                 android:id="@+id/textViewSub"
-                android:layout_width="185dp"
+                android:layout_width="151dp"
                 android:layout_height="30dp"
                 android:layout_margin="5dp"
                 android:text="@string/sub_title"
@@ -45,6 +46,14 @@
                 android:inputType="date|datetime"
                 android:text="Date"
                 android:textSize="18sp" />
+
+            <ImageButton
+                android:id="@+id/deletecommentbtn"
+                android:layout_width="72dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:background="@drawable/_23852_2001"
+                android:visibility="invisible" />
 
         </LinearLayout>
 
