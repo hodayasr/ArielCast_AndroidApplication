@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -38,6 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.arielcast.firebase.model.dataObject.Comment;
 import com.example.arielcast.firebase.model.dataObject.Course;
 import com.example.arielcast.firebase.model.dataObject.Lecture;
 import com.example.arielcast.firebase.model.dataObject.WatchLaterLec;
@@ -57,6 +59,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -91,6 +94,11 @@ public class ShowLecture extends AppCompatActivity {
     Uri videoUri;
 
 
+    CommentAdapter commentAdapter;
+    RecyclerView commentlist;
+    ArrayList<Comment> comments;
+
+
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +128,8 @@ public class ShowLecture extends AppCompatActivity {
                 commentbody.setText("it's works");
             }
         }); */
+
+
 
         lecture_name = findViewById(R.id.et_video_name);
         lecNameText=findViewById(R.id.textViewSub_lecName);
@@ -165,6 +175,15 @@ public class ShowLecture extends AppCompatActivity {
         String id =getIntent().getExtras().getString("ID");
         String lecturerId= getIntent().getExtras().getString("lecturerId");
         lecture_name.setText(lectureID);
+
+        //comments list
+        commentAdapter=new CommentAdapter(this,getMylist(),id);
+        commentlist= findViewById(R.id.comments_recycleview);
+        commentlist.setAdapter(commentAdapter);
+        commentAdapter.notifyDataSetChanged();
+
+
+
         String SCId = id + "-" + lectureID;
         DatabaseReference dbl = FirebaseDatabase.getInstance().getReference().child("WatchLaterLec").child(SCId);
         dbl.addValueEventListener(new ValueEventListener() {
@@ -494,6 +513,7 @@ public class ShowLecture extends AppCompatActivity {
 
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if(position==0) {
@@ -636,6 +656,34 @@ public class ShowLecture extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+
+    private ArrayList<Comment> getMylist() {
+        comments=new  ArrayList<Comment>();
+
+
+        Query q = FirebaseDatabase.getInstance().getReference().child("Comments").child("")
+                .orderByChild("lectureId").equalTo(lectureID);
+
+        q.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Comment c = data.getValue(Comment.class);
+                    comments.add(c);
+                    commentAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return comments;
     }
 
 }

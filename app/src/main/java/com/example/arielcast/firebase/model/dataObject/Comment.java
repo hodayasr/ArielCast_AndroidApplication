@@ -6,6 +6,7 @@ public class Comment {
     String date;
     String fullName;
     String userId;
+    String lectureId;
 
 
     public Comment() {
@@ -14,14 +15,16 @@ public class Comment {
         this.date = "";
         this.fullName = "";
         this.userId="";
+        this.lectureId="";
     }
 
-    public Comment(String commentId, String commentText, String date, String fullName,String userId) {
+    public Comment(String commentId, String commentText, String date, String fullName,String userId,String lectureId) {
         this.commentId=commentId;
         this.commentText=commentText;
         this.date=date;
         this.fullName=fullName;
         this.userId=userId;
+        this.lectureId=lectureId;
     }
 
     public String getCommentId() {
@@ -38,6 +41,10 @@ public class Comment {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public String getLectureId() {
+        return lectureId;
     }
 
     public String getUserId() {
@@ -62,5 +69,9 @@ public class Comment {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void setLectureId(String lectureId) {
+        this.lectureId = lectureId;
     }
 }
