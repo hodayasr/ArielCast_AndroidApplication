@@ -39,6 +39,7 @@
             android:id="@+id/textViewSub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="15dp"
             android:text="@string/sub_title"
@@ -47,6 +48,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/editButton5"
             app:layout_constraintEnd_toEndOf="@+id/textViewMain"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewMain" />
 
         <androidx.recyclerview.widget.RecyclerView

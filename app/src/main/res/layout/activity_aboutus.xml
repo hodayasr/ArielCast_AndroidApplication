@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:layout_weight="1"
-        android:text="•	The ArielCast app centralizes and makes it accessible for students to download and watch lectures in a convenient and easy way.
+        android:text="\•	The ArielCast app centralizes and makes it accessible for students to download and watch lectures in a convenient and easy way.
 "
         android:textSize="18sp" />
 
@@ -35,7 +35,7 @@
         android:layout_height="43dp"
         android:layout_margin="15dp"
         android:layout_weight="1"
-        android:text="•	The app also helps lecturers upload their lectures in an orderly and easy manner."
+        android:text="\•	The app also helps lecturers upload their lectures in an orderly and easy manner."
         android:textSize="18sp" />
 
     <TextView
@@ -44,7 +44,7 @@
         android:layout_height="73dp"
         android:layout_margin="15dp"
         android:layout_weight="1"
-        android:text="•	easy access to send messages to students in their courses."
+        android:text="\•	easy access to send messages to students in their courses."
         android:textSize="18sp" />
 
     <TextView

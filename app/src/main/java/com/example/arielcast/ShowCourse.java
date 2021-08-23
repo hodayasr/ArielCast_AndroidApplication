@@ -48,6 +48,7 @@ import static java.lang.System.currentTimeMillis;
 
 public class ShowCourse extends AppCompatActivity {
     private static final int PICK_IMAGE = 1;
+    private static int UpdateImg=0;
     private ImageView imageView;
     RecyclerView lecturesListView;
     MyLecturesAdapter myAdapter;
@@ -67,6 +68,7 @@ public class ShowCourse extends AppCompatActivity {
     Uri NewimageUri;
     StorageReference storageReference;
     TextView tv3;
+    Uri downloadUri;
 
 
     @Override
@@ -188,36 +190,73 @@ public class ShowCourse extends AppCompatActivity {
 
                 editb.setOnClickListener(v15 -> {
                     // update course on FireBase database
-
+                    if(UpdateImg==1) {
                     final StorageReference myRef = storageReference.child(currentTimeMillis() + "." + getExt(NewimageUri));
-                    Task<UploadTask.TaskSnapshot> uploadTask = myRef.putFile(NewimageUri);
 
-                    Task<Uri> taskurl = uploadTask.continueWithTask(task -> {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
-                        return myRef.getDownloadUrl();
-                    }).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Uri downloadUri = task.getResult();
-                            DatabaseReference updateRef = FirebaseDatabase.getInstance().getReference().child("Courses").child(cID);
-                            Course c = new Course(cID, course_name.getText().toString(), lecturerID, courseStart.getText().toString()
-                                    , courseEnd.getText().toString(), downloadUri.toString());
-                            updateRef.setValue(c);
-                            Intent intent = new Intent(ShowCourse.this, ShowCourse.class);
-                            intent.putExtra("CourseId", cID);
-                            intent.putExtra("Email", email);
-                            intent.putExtra("ID", Id);
-                            startActivity(intent);
-                            Toast.makeText(ShowCourse.this, "Course updated!",
-                                    Toast.LENGTH_LONG).show();
 
-                        } else {
-                            Toast.makeText(ShowCourse.this, "Failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        Task<UploadTask.TaskSnapshot> uploadTask = myRef.putFile(NewimageUri);
+                        Task<Uri> taskurl = uploadTask.continueWithTask(task -> {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+                            return myRef.getDownloadUrl();
+                        }).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                downloadUri = task.getResult();
 
+                                DatabaseReference updateRef = FirebaseDatabase.getInstance().getReference().child("Courses").child(cID);
+
+                                Course c = new Course(cID, course_name.getText().toString(), lecturerID, courseStart.getText().toString()
+                                                , courseEnd.getText().toString(), downloadUri.toString());
+                                   updateRef.setValue(c);
+
+                                Intent intent = new Intent(ShowCourse.this, ShowCourse.class);
+                                intent.putExtra("CourseId", cID);
+                                intent.putExtra("Email", email);
+                                intent.putExtra("ID", Id);
+                                startActivity(intent);
+                                Toast.makeText(ShowCourse.this, "Course updated!",
+                                        Toast.LENGTH_LONG).show();
+
+                            } else {
+                                Toast.makeText(ShowCourse.this, "Failed",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    if(UpdateImg==0) {
+                        DatabaseReference updateRef = FirebaseDatabase.getInstance().getReference().child("Courses").child(cID);
+
+                        updateRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    Course c = dataSnapshot.getValue(Course.class);
+
+                                    c.setCourseName(course_name.getText().toString());
+                                    c.setStartDate(courseStart.getText().toString());
+                                    c.setEndDate(courseEnd.getText().toString());
+                                        /*  Course c = new Course(cID, course_name.getText().toString(), lecturerID, courseStart.getText().toString()
+                                                , courseEnd.getText().toString(), downloadUri.toString());
+                                        updateRef.setValue(c);*/
+                                    updateRef.setValue(c);
+                                    Intent intent = new Intent(ShowCourse.this, ShowCourse.class);
+                                    intent.putExtra("CourseId", cID);
+                                    intent.putExtra("Email", email);
+                                    intent.putExtra("ID", Id);
+                                    startActivity(intent);
+                                    Toast.makeText(ShowCourse.this, "Course updated!",
+                                            Toast.LENGTH_LONG).show();
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
                 });
 
                 myDialog.show();
@@ -393,6 +432,7 @@ public class ShowCourse extends AppCompatActivity {
                 data != null || data.getData() != null) {
             NewimageUri = data.getData();
             courseImage.setImageURI(NewimageUri);
+            UpdateImg=1;
         }
     }
 

@@ -61,7 +61,8 @@
             android:id="@+id/deleteButton"
             android:layout_width="41dp"
             android:layout_height="38dp"
-            android:background="@android:drawable/ic_menu_delete" />
+            android:background="@android:drawable/ic_menu_delete"
+            android:contentDescription="TODO" />
 
         <ImageButton
             android:id="@+id/downloadbutton"
@@ -152,6 +153,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/comments_recycleview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="15dp"

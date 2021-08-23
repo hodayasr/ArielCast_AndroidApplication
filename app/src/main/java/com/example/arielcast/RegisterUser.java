@@ -57,6 +57,10 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
         editTextPhone = findViewById(R.id.phone);
         progressBar = findViewById(R.id.progressBar);
 
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,6 +79,11 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
         if(item.getItemId()==R.id.aboutus)
         {
             startActivity(new Intent(this, AboutUsActivity.class));
+        }
+        if (item.getItemId() == android.R.id.home)
+        {
+            this.finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

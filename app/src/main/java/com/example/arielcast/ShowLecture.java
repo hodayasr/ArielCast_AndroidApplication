@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DownloadManager;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -26,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -50,6 +52,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -62,6 +65,8 @@ import static java.lang.System.currentTimeMillis;
 
 public class ShowLecture extends AppCompatActivity {
     private static final int PICK_VIDEO = 1;
+    private static int UpdateVideo=0;
+    StorageReference storageReference;
     String lectureID;
     String videoPath ,videoPathD;
     TextView lecture_name;
@@ -97,6 +102,8 @@ public class ShowLecture extends AppCompatActivity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         }
+
+        storageReference = FirebaseStorage.getInstance().getReference().child("Video");
 
         //comments
         commentstitle=findViewById(R.id.titleComments);
@@ -267,8 +274,8 @@ public class ShowLecture extends AppCompatActivity {
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         if(snapshot.exists()) {
                                             videoPathD = snapshot.child("video_url").getValue(String.class);
-                                            uriD = Uri.parse(videoPath);
-                                            videoDialog.setVideoURI(uri);
+                                            uriD = Uri.parse(videoPathD);
+                                            videoDialog.setVideoURI(uriD);
                                             videoDialog.requestFocus();
                                             videoDialog.start();
 
@@ -280,7 +287,7 @@ public class ShowLecture extends AppCompatActivity {
                                     }
                                 });
                                 EditText lecturenameEdit=myDialog.findViewById(R.id.insertNewLectureName);
-                                lecturenameEdit.setHint(lecture_name.getText());
+                                lecturenameEdit.setText(lecture_name.getText());
                                 Button updatebtn=myDialog.findViewById(R.id.updateLectureVideo);
                                 updatebtn.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -291,6 +298,101 @@ public class ShowLecture extends AppCompatActivity {
                                         intent.setType("video/*, audio/*");
                                         intent.setAction(Intent.ACTION_GET_CONTENT);
                                         startActivityForResult(intent,PICK_VIDEO);
+                                    }
+                                });
+
+                                Button updateLecBtn=myDialog.findViewById(R.id.continueb);
+                                updateLecBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        // TODO : edit lecture name and video file
+                                        if(UpdateVideo==1) {
+                                            final StorageReference myRef = storageReference.child(currentTimeMillis() + "." + getExt(videoUri));
+
+
+                                            Task<UploadTask.TaskSnapshot> uploadTask = myRef.putFile(videoUri);
+                                            Task<Uri> taskurl = uploadTask.continueWithTask(task -> {
+                                                if (!task.isSuccessful()) {
+                                                    throw task.getException();
+                                                }
+                                                return myRef.getDownloadUrl();
+                                            }).addOnCompleteListener(task -> {
+                                                if (task.isSuccessful()) {
+                                                    Uri downloadUri = task.getResult();
+
+                                                    DatabaseReference updateRef = FirebaseDatabase.getInstance().getReference()
+                                                            .child("Lectures").child(lectureID);
+
+                                                    updateRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            Lecture lec= snapshot.getValue(Lecture.class);
+                                                            lec.setLectureName(lecturenameEdit.getText().toString());
+                                                            lec.setVideo_url(downloadUri.toString());
+                                                            FirebaseDatabase.getInstance().getReference().child("Lectures")
+                                                                    .child(lectureID).getRef().removeValue();
+                                                            FirebaseDatabase.getInstance().getReference().child("Lectures")
+                                                                    .child(lecturenameEdit.getText().toString()).setValue(lec);
+
+
+                                                            Intent intent = new Intent(ShowLecture.this, ShowLecture.class);
+                                                            intent.putExtra("lecID",lecturenameEdit.getText().toString());
+                                                            intent.putExtra("lecturerId", lecturerId);
+                                                            intent.putExtra("ID", id);
+
+                                                            startActivity(intent);
+                                                            Toast.makeText(ShowLecture.this, "Lecture updated!",
+                                                                    Toast.LENGTH_LONG).show();
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+
+
+                                                } else {
+                                                    Toast.makeText(ShowLecture.this, "Failed",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                        if(UpdateVideo==0) {
+                                            DatabaseReference updateRef = FirebaseDatabase.getInstance().getReference()
+                                                    .child("Lectures").child(lectureID);
+
+                                            updateRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    if(snapshot.exists()) {
+                                                        Lecture lec = snapshot.getValue(Lecture.class);
+                                                        lec.setLectureName(lecturenameEdit.getText().toString());
+
+                                                        FirebaseDatabase.getInstance().getReference().child("Lectures")
+                                                                .child(lectureID).getRef().removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("Lectures")
+                                                                .child(lecturenameEdit.getText().toString()).setValue(lec);
+
+                                                        Intent intent = new Intent(ShowLecture.this, ShowLecture.class);
+                                                        intent.putExtra("lecID", lecturenameEdit.getText().toString());
+                                                        intent.putExtra("lecturerId", lecturerId);
+                                                        intent.putExtra("ID", id);
+
+                                                        startActivity(intent);
+                                                        Toast.makeText(ShowLecture.this, "Lecture updated!",
+                                                                Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
+
+                                        }
                                     }
                                 });
 
@@ -318,7 +420,6 @@ public class ShowLecture extends AppCompatActivity {
         });
 
         dataRef = FirebaseDatabase.getInstance().getReference().child("Lectures").child(lectureID);
-
 
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -523,10 +624,18 @@ public class ShowLecture extends AppCompatActivity {
         if (requestCode == PICK_VIDEO || requestCode == RESULT_OK ||
                 data != null || data.getData() != null) {
             videoUri = data.getData();
+            UpdateVideo=1;
             videoView2.setVideoURI(videoUri);
             videoView2.requestFocus();
             videoView2.start();
         }
+    }
+
+
+    private String getExt(Uri uri){
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
 }
