@@ -5,6 +5,7 @@ public class Comment {
     String commentText;
     String date;
     String fullName;
+    String userId;
 
 
     public Comment() {
@@ -12,13 +13,15 @@ public class Comment {
         this.commentText = "";
         this.date = "";
         this.fullName = "";
+        this.userId="";
     }
 
-    public Comment(String commentId, String commentText, String date, String fullName) {
+    public Comment(String commentId, String commentText, String date, String fullName,String userId) {
         this.commentId=commentId;
         this.commentText=commentText;
         this.date=date;
         this.fullName=fullName;
+        this.userId=userId;
     }
 
     public String getCommentId() {
@@ -37,6 +40,10 @@ public class Comment {
         return fullName;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     public void setCommentId(String commentId) {
         this.commentId = commentId;
     }
@@ -51,5 +58,9 @@ public class Comment {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
