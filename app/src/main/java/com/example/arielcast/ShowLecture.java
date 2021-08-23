@@ -42,6 +42,8 @@ import android.widget.VideoView;
 import com.example.arielcast.firebase.model.dataObject.Comment;
 import com.example.arielcast.firebase.model.dataObject.Course;
 import com.example.arielcast.firebase.model.dataObject.Lecture;
+import com.example.arielcast.firebase.model.dataObject.Lecturer;
+import com.example.arielcast.firebase.model.dataObject.Student;
 import com.example.arielcast.firebase.model.dataObject.WatchLaterLec;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -63,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -111,23 +114,14 @@ public class ShowLecture extends AppCompatActivity {
 
         }
 
+
         storageReference = FirebaseStorage.getInstance().getReference().child("Video");
 
         //comments
+        commentlist= findViewById(R.id.comments_recycleview);
         commentstitle=findViewById(R.id.titleComments);
-        commentstitle.setText("Comments \t\t\t | \t\t\t 0");
         commentbody=findViewById(R.id.commentbody);
         sendcomment=findViewById(R.id.sendcomment);
-       /* if(commentbody.getText().toString().isEmpty())
-            sendcomment.setClickable(false);
-        else
-            sendcomment.setClickable(true);
-
-        sendcomment.setOnClickListener(v -> {
-            if(sendcomment.isClickable()) {
-                commentbody.setText("it's works");
-            }
-        }); */
 
 
 
@@ -178,9 +172,80 @@ public class ShowLecture extends AppCompatActivity {
 
         //comments list
         commentAdapter=new CommentAdapter(this,getMylist(),id);
-        commentlist= findViewById(R.id.comments_recycleview);
+        //commentlist= findViewById(R.id.comments_recycleview);
         commentlist.setAdapter(commentAdapter);
         commentAdapter.notifyDataSetChanged();
+
+
+        sendcomment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!commentbody.getText().toString().isEmpty())
+                {
+                    DatabaseReference dbref=FirebaseDatabase.getInstance().getReference().child("Comments");
+                    Comment newcomment=new Comment();
+
+                    newcomment.setUserId(id);
+                    newcomment.setCommentText(commentbody.getText().toString());
+
+                    Date presentTime_Date = Calendar.getInstance().getTime();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    String cdate= dateFormat.format(presentTime_Date);
+                    newcomment.setDate(cdate);
+
+
+                    //get full name - checks if user id in lectures or students list and get full name
+                    Query q=FirebaseDatabase.getInstance().getReference().child("Lecturers")
+                            .child("").orderByChild("lecturerId").equalTo(id);
+
+                    q.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    if(snapshot.exists())
+                                                    {
+                                                        String fn=snapshot.child("fullname").getValue(String.class);
+                                                        newcomment.setFullName(fn);
+
+                                                    }
+
+                                                    Query q2=FirebaseDatabase.getInstance().getReference().child("Students")
+                                                            .child(id);
+
+                                                    q2.addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if(snapshot.exists())
+                                                            {
+                                                                String fn=snapshot.child("fullname").getValue(String.class);
+                                                                newcomment.setFullName(fn);
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
+                    newcomment.setLectureId(lectureID);
+                    String commentID=UUID.randomUUID().toString();
+                    newcomment.setCommentId(commentID);
+
+                    dbref.child(commentID).setValue(newcomment);
+                    commentAdapter.notifyDataSetChanged();
+
+                    commentbody.setText("");
+                }
+            }
+        });
 
 
 
@@ -662,7 +727,6 @@ public class ShowLecture extends AppCompatActivity {
     private ArrayList<Comment> getMylist() {
         comments=new  ArrayList<Comment>();
 
-
         Query q = FirebaseDatabase.getInstance().getReference().child("Comments").child("")
                 .orderByChild("lectureId").equalTo(lectureID);
 
@@ -683,6 +747,9 @@ public class ShowLecture extends AppCompatActivity {
 
             }
         });
+
+        commentstitle.setText("Comments \t\t\t | \t\t\t "+comments.size());
+
         return comments;
     }
 
