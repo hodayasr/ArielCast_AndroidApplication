@@ -91,6 +91,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             startActivity(new Intent(this, PhonebookActivity.class));
         }
 
+        if (v.getId() == R.id.contact){
+            startActivity(new Intent(this, ContactUsActivity.class));
+        }
+
 
         if(v.getId() == R.id.setNewPassword) {
              String email = editTextEmail.getText().toString().trim();

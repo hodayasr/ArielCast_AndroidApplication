@@ -17,6 +17,10 @@
         <activity
             android:name=".PhonebookActivity"
             android:label="Phonebook" />
+
+        <activity
+            android:name=".ContactUsActivity"
+            android:label="ContactUs" />
         <activity
             android:name=".AboutUsActivity"
             android:label="About Us" />
