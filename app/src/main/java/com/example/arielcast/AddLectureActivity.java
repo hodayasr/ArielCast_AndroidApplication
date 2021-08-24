@@ -221,6 +221,65 @@ public class AddLectureActivity extends AppCompatActivity{
                             NotificationCompat.Builder builder = new NotificationCompat.Builder(AddLectureActivity.this, "My Notification");
                             builder.setSmallIcon(R.drawable.ic_baseline_chat_24);
                             builder.setContentTitle("new lecture was upload");
+
+                            // get course by courseid and send email to students who following this course
+                            Query query = FirebaseDatabase.getInstance().getReference().child("Courses").child(cId);
+
+                            query.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    String courseId = snapshot.child("courseId").getValue(String.class);
+
+                                    //find students following
+                                    Query quS = FirebaseDatabase.getInstance().getReference().child("StudentCourses").orderByChild("courseId").equalTo(cId);
+                                    quS.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            for (DataSnapshot data : snapshot.getChildren()) {
+                                                String studenti = data.child("studentId").getValue(String.class);
+                                                Query qs = FirebaseDatabase.getInstance().getReference().child("Students").child(studenti);
+                                                qs.addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        String stuemail = snapshot.child("email").getValue(String.class);
+                                                        try {
+                                                            GMailSender sender = new GMailSender("castariel01@gmail.com", "cast@1234567");
+                                                            sender.sendMail(coursename,
+                                                                    "A New lecture " + lecture.getLectureName() + " was upload to the course " + coursename,
+                                                                    "castariel01@gmail.com",
+                                                                    stuemail);
+
+                                                        } catch (Exception e) {
+                                                         /*   Toast.makeText(AddLectureActivity.this,
+                                                                    "email not sent !",
+                                                                    Toast.LENGTH_LONG).show();*/
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+                            //notification for lecturer
                             Query coursequery = FirebaseDatabase.getInstance().getReference().child("Courses").child("").orderByChild("courseId").equalTo(lecture.getCourseId());
                             coursequery.addValueEventListener(new ValueEventListener() {
                                 @Override

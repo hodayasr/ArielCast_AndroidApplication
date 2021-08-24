@@ -143,7 +143,7 @@ public class MailActivity extends AppCompatActivity {
                 // get list of followers (students) of this course
                 // and find their email - send massage all followers
 
-                // get lecturer email by lecId
+                // get course by courseid and send email to students who following this course
                 Query query = FirebaseDatabase.getInstance().getReference().child("Courses").child(cId);
 
                 query.addValueEventListener(new ValueEventListener() {
