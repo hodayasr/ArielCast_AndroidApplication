@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,17 +35,32 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+import io.paperdb.Paper;
+
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
     private EditText editTextEmail, editTextPassword;
     private FirebaseAuth mAuth;
     private static final String LOGGED_IN_ACCOUNT = "com.example.arielcast.LOGGED_IN_ACCOUNT";
     private SharedPreferences sharedPreferences;
+    private SharedPreferences remSharedPreferences;
+
+    private CheckBox chkRememberMe;
+    SharedPreferences.Editor remEditor;
     DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+    private static final String PREF_NAME = "prefs";
+    private static final String KEY_REMEMBER = "remember";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_PASS = "password";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        remSharedPreferences = getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE);
+        remEditor = remSharedPreferences.edit();
+
 
         TextView register = findViewById(R.id.register1);
         register.setOnClickListener(this);
@@ -54,6 +73,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         editTextEmail = findViewById(R.id.emailAddress);
         editTextPassword = findViewById(R.id.password1);
+        chkRememberMe = (CheckBox)findViewById(R.id.checkBox);
+
+        if(remSharedPreferences.getBoolean(KEY_REMEMBER, false))
+            chkRememberMe.setChecked(true);
+        else
+            chkRememberMe.setChecked(false);
+
+        editTextEmail.setText(remSharedPreferences.getString(KEY_EMAIL, ""));
+        editTextPassword.setText(remSharedPreferences.getString(KEY_PASS, ""));
+
+        editTextEmail.addTextChangedListener(this);
+        editTextPassword.addTextChangedListener(this);
+        chkRememberMe.setOnCheckedChangeListener(this);
 
         mAuth = FirebaseAuth.getInstance();
         sharedPreferences = getSharedPreferences(LOGGED_IN_ACCOUNT,Context.MODE_PRIVATE);
@@ -237,6 +269,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+
     // reset password  if user forget password
     private void resetPassword() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -259,5 +292,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
 
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        managePrefs();
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        managePrefs();
+    }
+
+    private void managePrefs(){
+        if(chkRememberMe.isChecked()){
+            remEditor.putString(KEY_EMAIL, editTextEmail.getText().toString().trim());
+            remEditor.putString(KEY_PASS, editTextPassword.getText().toString().trim());
+            remEditor.putBoolean(KEY_REMEMBER, true);
+            remEditor.apply();
+        }else {
+            remEditor.putBoolean(KEY_REMEMBER, false);
+            remEditor.remove(KEY_PASS);
+            remEditor.remove(KEY_EMAIL);
+            remEditor.apply();
+        }
     }
 }

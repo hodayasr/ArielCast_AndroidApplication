@@ -2,7 +2,7 @@ package com.example.arielcast.firebase.model.dataObject;
 
 public class Student {
     String studentId;
-     String email;
+    String email;
      String fullname;
      String phone;
      String password;
